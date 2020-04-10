@@ -49,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainContainer.addView(addNew(textField[0]));
-
+                try {
+                    mainContainer.addView(addNew(textField[0]));
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
