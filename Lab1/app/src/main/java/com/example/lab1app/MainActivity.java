@@ -2,19 +2,19 @@ package com.example.lab1app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,6 +70,28 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.LayoutParams layoutParams = new LinearLayout
                 .LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2f);
         editText.setLayoutParams(layoutParams);
+        editText.setHint("Enter Text");
+        editText.setSingleLine();
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        final String[] textField = new String[1];
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager inputMethodManager = (InputMethodManager)
+                            getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(),0);
+
+                    textField[0] = editText.getText().toString();
+
+                    editText.setCursorVisible(false);
+                }
+                return false;
+            }
+        });
+
 
         Button button = new Button(getApplicationContext());
         button.setText(textFieldString);
@@ -79,7 +101,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainContainer.addView(addNew(editText.toString()));
+                try {
+                    mainContainer.addView(addNew(textField[0]));
+                } catch(NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
         });
         linearLayout.addView(editText);
