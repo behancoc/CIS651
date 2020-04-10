@@ -3,12 +3,18 @@ package com.example.lab1app;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,22 +28,35 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout mainContainer = findViewById(R.id.main_containter);
 
 
-        Button button = (Button) findViewById(R.id.add_button);
+        final Button button = findViewById(R.id.add_button);
         button.setText("Add Item");
-        EditText editText = findViewById(R.id.edit_text_view);
+        final EditText editText = findViewById(R.id.edit_text_view);
 
-        //final String newText = editText.getText().toString();
+        final String[] textField = new String[1];
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+           @Override
+           public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+               if (actionId == EditorInfo.IME_ACTION_DONE) {
+                  textField[0] = editText.getText().toString();
+                   Log.d(TAG, "textField: " + editText.getText().toString());
+                   editText.setCursorVisible(false);
+
+               }
+               return false;
+           }
+       });
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Hello!", Toast.LENGTH_LONG).show();
-                mainContainer.addView(addNew("TEST"));
+                mainContainer.addView(addNew(textField[0]));
 
             }
         });
     }
 
     public LinearLayout addNew(String textFieldString) {
+        //TODO: Refactor name of this View Object
         final LinearLayout mainContainer  = findViewById(R.id.main_containter);
         LinearLayout linearLayout = new LinearLayout(getApplicationContext());
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -62,8 +81,10 @@ public class MainActivity extends AppCompatActivity {
         });
         linearLayout.addView(editText);
         linearLayout.addView(button);
-
         return linearLayout;
+    }
+
+    public void addNewInLandscape() {
 
     }
 }
