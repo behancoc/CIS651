@@ -3,6 +3,7 @@ package com.example.lab1app;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -12,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,35 +29,51 @@ public class MainActivity extends AppCompatActivity {
 
         final LinearLayout mainContainer = findViewById(R.id.main_containter);
 
+        int orientation = getResources().getConfiguration().orientation;
 
-        final Button button = findViewById(R.id.add_button);
-        button.setText("Add Item");
-        final EditText editText = findViewById(R.id.edit_text_view);
+        if(orientation == Configuration.ORIENTATION_PORTRAIT) {
+            final Button button = findViewById(R.id.add_button);
+            button.setText("Add Item");
+            final EditText editText = findViewById(R.id.edit_text_view);
 
-        final String[] textField = new String[1];
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-           @Override
-           public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-               if (actionId == EditorInfo.IME_ACTION_DONE) {
-                  textField[0] = editText.getText().toString();
-                   Log.d(TAG, "textField: " + editText.getText().toString());
-                   editText.setCursorVisible(false);
+            final String[] textField = new String[1];
+            editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        textField[0] = editText.getText().toString();
+                        Log.d(TAG, "textField: " + editText.getText().toString());
+                        editText.setCursorVisible(false);
 
-               }
-               return false;
-           }
-       });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    mainContainer.addView(addNew(textField[0]));
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
+                    }
+                    return false;
                 }
-            }
-        });
+            });
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        mainContainer.addView(addNew(textField[0]));
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Button mButton = findViewById(R.id.add_button);
+            mButton.setText("Add Image");
+
+            mButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addNewInLandscape();
+                }
+            });
+        }
     }
 
     public LinearLayout addNew(String textFieldString) {
@@ -114,6 +132,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addNewInLandscape() {
+        ImageView imageView = new ImageView(getApplicationContext());
+        imageView.setImageResource(R.drawable.syracuse_univ);
+        LinearLayout linearLayout = findViewById(R.id.main_containter);
+        linearLayout.addView(imageView);
 
     }
 }
