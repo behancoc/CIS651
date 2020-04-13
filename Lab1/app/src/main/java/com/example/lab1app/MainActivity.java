@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Button mButton = findViewById(R.id.add_button);
-            mButton.setText("Add Image");
+            mButton.setText("Add Image".toUpperCase());
 
             mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public LinearLayout addNew(String textFieldString) {
-        //TODO: Refactor name of this View Object
         final LinearLayout mainContainer  = findViewById(R.id.main_containter);
         LinearLayout linearLayout = new LinearLayout(getApplicationContext());
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button button = new Button(getApplicationContext());
-        button.setText(textFieldString);
+        button.setText(textFieldString.toUpperCase());
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout
                 .LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         button.setLayoutParams(layoutParams1);
