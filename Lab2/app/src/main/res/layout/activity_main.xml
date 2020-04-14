@@ -77,5 +77,12 @@
         app:layout_constraintRight_toRightOf="@id/dateTimeBtn"
         android:layout_height="wrap_content" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/dateTimeBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
