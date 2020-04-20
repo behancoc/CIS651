@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -17,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private BottomNavigationView bottomNavigationView;
-    private int buttonNumber;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,14 @@ public class MainActivity extends AppCompatActivity implements
 
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+
+        imageView = findViewById(R.id.image_view);
+        imageView.setImageResource(R.drawable.brandon_hancock_image);
+
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        buttonNumber = item.getItemId();
 
         switch (item.getItemId()) {
             case R.id.Task_0: {
