@@ -29,7 +29,6 @@ public class Task_4 extends AppCompatActivity {
     ImageView imageView;
     SeekBar seekBar;
     MovieData movieData = new MovieData();
-    CoordinatorLayout coordinatorLayout;
     int index =  0;
 
     @Override
@@ -58,6 +57,7 @@ public class Task_4 extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
                 seekBar.setProgress(50);
+                resetImageSize(imageView);
                 return true;
             }
         });
@@ -68,10 +68,8 @@ public class Task_4 extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                double percentage = progress/100.00;
-                Log.d(TAG, "Progress: " + percentage);
-                //scaleImage(imageView, progress);
-
+                imageView.getHeight();
+                scaleImage(imageView, progress);
             }
 
             @Override
@@ -97,27 +95,21 @@ public class Task_4 extends AppCompatActivity {
         private static final String DEBUG_TAG = "Gestures";
 
         private static final int MIN_SWIPE_DISTANCE_X_AXIS = 100;
-        private static final int MIN_SWIPE_DISTANCE_Y_AXIS = 100;
 
         //Basing this upon device... currently running a Google Pixel 3XL
         //The maximum distance I can swipe from edge to edge is approx 1400 x axis
         private static final int MAX_SWIPE_DISTANCE_X_AXIS = 1100;
-        private static final int MAX_SWIPE_DISTANCE_Y_AXIS = 1100;
-
-
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             Log.d(DEBUG_TAG, "onFling event 1: " + e1.toString());
             Log.d(DEBUG_TAG, "onFling event 2: " + e2.toString());
             Log.d(DEBUG_TAG, "onFling velocity x: " + velocityX);
-            Log.d(DEBUG_TAG, "onFling velocity y: " + velocityY);
+
 
             double changeInXAxis = e1.getX() - e2.getX();
-            double changeInYAxis = e1.getY() - e2.getY();
 
             Log.d(DEBUG_TAG, "changeInXAxis " + changeInXAxis);
-            Log.d(DEBUG_TAG, "changeInYAxis " + changeInYAxis);
 
             if((Math.abs(changeInXAxis)>= MIN_SWIPE_DISTANCE_X_AXIS) && (Math.abs(changeInXAxis) <= MAX_SWIPE_DISTANCE_X_AXIS)) {
                 Log.d(DEBUG_TAG, "here");
@@ -159,27 +151,53 @@ public class Task_4 extends AppCompatActivity {
             }
             return true;
         }
-
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            Log.d(DEBUG_TAG, "onLongPress: " + e.toString());
-            seekBar.setProgress(50);
-        }
     }
 
-    public void scaleImage(ImageView image, double progressPercentage) {
-        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+    public void resetImageSize(ImageView imageView) {
+          imageView.getLayoutParams().width = 637;
+          imageView.getLayoutParams().height = 943;
+          imageView.requestLayout();
+    }
 
-        Log.d(TAG, "Image width: " + width);
-        Log.d(TAG, "Image height: " + height);
+    public void scaleImage(ImageView image, double seekBarProgress) {
+        int defaultWidth = 637;
+        int defaultHeight = 943;
+        double scaledWidth = defaultWidth;
+        double scaledHeight = defaultHeight;
 
-        double scaledWidth = progressPercentage * width;
-        double scaledHeight = progressPercentage * height;
 
-        bitmap = Bitmap.createScaledBitmap(bitmap, (int)scaledWidth, (int)scaledHeight, true);
-        image.setImageBitmap(bitmap);
+        double width = image.getWidth();
+        double height = image.getHeight();
+
+        double progressPercentage = seekBarProgress/100.0;
+
+
+
+        if (progressPercentage <= 0.49) {
+            double adjustedPercentage = (1.0 + (progressPercentage - 0.50));
+            scaledWidth = adjustedPercentage * defaultWidth;
+            scaledHeight = adjustedPercentage * defaultHeight;
+            Log.d(TAG, "scaledWidth: " + scaledWidth);
+            Log.d(TAG, "scaledHeight: " + scaledHeight);
+        }
+
+
+        if (progressPercentage == 0.50) {
+             scaledWidth = defaultWidth;
+             scaledHeight = defaultHeight;
+
+        }
+
+        if (progressPercentage >= 0.51) {
+            double adjustedPercentage = (1.0 + (progressPercentage - 0.50));
+            scaledWidth = (adjustedPercentage + progressPercentage) * defaultWidth;
+            scaledHeight = (adjustedPercentage + progressPercentage) * defaultWidth;
+        }
+
+        imageView.getLayoutParams().width = (int) scaledWidth;
+        imageView.getLayoutParams().height = (int) scaledHeight;
+        imageView.requestLayout();
+
+
     }
 }
