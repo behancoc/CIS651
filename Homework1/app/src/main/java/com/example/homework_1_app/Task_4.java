@@ -125,32 +125,30 @@ public class Task_4 extends AppCompatActivity {
 
                     try {
                         Log.d(DEBUG_TAG, "Decrement Index!!!!!!!!!!!!");
+                        index ++;
+                        imageView.setImageResource((Integer) movieData.getItem(index).get("image"));
 
-                        if (index == 0) {
-
-                        } else {
-                            index --;
-                            imageView.setImageResource((Integer) movieData.getItem(index).get("image"));
-                        }
-
-
-
-                    }catch (IndexOutOfBoundsException | NullPointerException e) {
+                    } catch (IndexOutOfBoundsException | NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
 
                 if (changeInXAxis < 0) {
-                    Log.d(DEBUG_TAG, "Increment Index!!!!!!!!!!!!");
-                    index++;
-                    imageView.setImageResource((Integer) movieData.getItem(index).get("image"));
+                    try {
+                        if (index == 0) {
+
+                            Log.d(DEBUG_TAG, "Protection against index out of bounds issue...");
+
+                        } else {
+                            Log.d(DEBUG_TAG, "Decrement Index!!!!!!!!!!!!");
+                            index--;
+                            imageView.setImageResource((Integer) movieData.getItem(index).get("image"));
+                        }
+                    } catch(IndexOutOfBoundsException | NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
-//            index++;
-//            imageView.setImageResource((Integer) movieData.getItem(index).get("image"));
-
-
             return true;
         }
 

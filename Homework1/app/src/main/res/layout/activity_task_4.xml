@@ -12,8 +12,10 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:layout_centerInParent="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/seek_bar"/>
 
     <SeekBar
         android:id="@+id/seek_bar"
