@@ -1,12 +1,14 @@
 package com.example.lab2;
 
-import androidx.annotation.VisibleForTesting;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,7 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -46,11 +48,22 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDetector = new GestureDetectorCompat(this, new MyGestureListener());
+
         textView = findViewById(R.id.scoretext);
         seekBar = findViewById(R.id.seekBar);
         toggleButton = findViewById(R.id.disable_snack);
 
-        mDetector = new GestureDetectorCompat(getApplicationContext(), new MyGestureListener() )
+
+        imageView = findViewById(R.id.imageView);
+        imageView.setImageResource(R.drawable.avatar);
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mDetector.onTouchEvent(event);
+                return true;
+            }
+        });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -87,22 +100,35 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     public void createToast(View view) {
         RadioButton simpleRB = findViewById(R.id.rb_simple);
-        Toast.makeText(this, "Simple Toast Message", Toast.LENGTH_SHORT).show();
+        RadioButton customRB = findViewById(R.id.rb_custom);
+        if (simpleRB.isChecked()) {
+            Toast.makeText(this, "Simple Toast Message", Toast.LENGTH_SHORT).show();
+        }
 
-        LayoutInflater layoutInflater = getLayoutInflater();
-        View layout = layoutInflater.inflate(R.layout.custom_toast,
-                (ViewGroup)findViewById(R.id.toastRoot));
+        if(customRB.isChecked()) {
+            LayoutInflater layoutInflater = getLayoutInflater();
+            View layout = layoutInflater.inflate(R.layout.custom_toast,
+                    (ViewGroup)findViewById(R.id.toastRoot));
 
-        SeekBar seekBarInToast = layout.findViewById(R.id.seekBarInToast);
-        TextView textViewInToast = layout.findViewById(R.id.textViewinToast);
+            SeekBar seekBarInToast = layout.findViewById(R.id.seekBarInToast);
+            TextView textViewInToast = layout.findViewById(R.id.textViewinToast);
+            textViewInToast.setText(R.string.custom_toast_string);
+            textViewInToast.setGravity(Gravity.CENTER);
 
-        //TODO: Set the values for these, from the actual seekbar’s progess.
+            seekBarInToast.setProgress(seekBar.getProgress());
+            Toast toast = new Toast(getApplicationContext());
+            toast.setGravity(Gravity.BOTTOM,0,0);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
 
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.BOTTOM,0,0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 
 
@@ -120,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 final String oldValue=textViewDateTime.getText().toString();
 
-                textViewDateTime.setText(String.valueOf(month)
+                textViewDateTime.setText(String.valueOf(month + 1)
                         + "/" + String.valueOf(dayOfMonth)
                         + "/" + String.valueOf(year)
                         + " " + String.valueOf(hourOfDay)
@@ -153,13 +179,29 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         datePickerDialog.show();
     }
 
-    private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final String DEBUG_TAG = "Gestures";
+
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            return super.onDoubleTap(e);
+            Log.d(TAG, "Double Tap occured: " + e.toString());
+
+            index ++;
+            imageView.setImageResource((Integer)movieData.getItem(index).get("image"));
+            Snackbar snackbar = Snackbar.make(imageView, "Image Changed", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "Undo change?");
+                    index --;
+                    imageView.setImageResource((Integer)movieData.getItem(index).get("image"));
+
+                }
+            });
+            snackbar.show();
+
+            return true;
         }
     }
-
 }
 
 

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">lab2</string>
+    <string name="custom_toast_string">Custom Toast Message!</string>
+
 </resources>
