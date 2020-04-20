@@ -2,15 +2,19 @@ package com.example.lab2;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GestureDetectorCompat;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,6 +35,11 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private ToggleButton toggleButton;
     private Integer oldValue = 50;
 
+    private GestureDetectorCompat mDetector;
+    private MovieData movieData = new MovieData();
+    private ImageView imageView;
+    private int index = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         textView = findViewById(R.id.scoretext);
         seekBar = findViewById(R.id.seekBar);
         toggleButton = findViewById(R.id.disable_snack);
+
+        mDetector = new GestureDetectorCompat(getApplicationContext(), new MyGestureListener() )
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -61,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                         public void onClick(View v) {
                             textView.setText(Integer.toString(oldValue));
                             seekBar.setProgress(oldValue);
-                            Snackbar snackbar1 = Snackbar.make(v, "Seekbar restored", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar1 = Snackbar.make(v, "Seekbar restored",
+                                    Snackbar.LENGTH_SHORT);
                             snackbar1.show();
                         }
                     });
@@ -140,4 +152,14 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 this, yy, mm, dd);
         datePickerDialog.show();
     }
+
+    private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            return super.onDoubleTap(e);
+        }
+    }
+
 }
+
+
