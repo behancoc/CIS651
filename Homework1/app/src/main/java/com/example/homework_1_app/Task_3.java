@@ -26,7 +26,7 @@ public class Task_3 extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        Log.d(TAG, "onCreate() method has been called...");
+        Log.d(TAG, "onStart() method has been called...");
         Toast.makeText(getApplicationContext(),"onStart() method has been called...",
                 Toast.LENGTH_SHORT).show();
     }
