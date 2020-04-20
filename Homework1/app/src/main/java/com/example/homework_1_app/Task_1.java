@@ -14,15 +14,19 @@ public class Task_1 extends AppCompatActivity {
     private Button button3;
     private Button button40;
     private Button button100000;
-    private Button buttonSave;
-    private Button buttonSubmit;
-    private Button buttonCancel;
+    private Button saveButton;
+    private Button submitButton;
+    private Button cancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_1);
 
+        inflateButtons();
+    }
+
+    private void inflateButtons() {
         button1 = findViewById(R.id.button_1);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,33 +76,33 @@ public class Task_1 extends AppCompatActivity {
             }
         });
 
-        buttonSave = findViewById(R.id.button_save);
-        buttonSave.setOnClickListener(new View.OnClickListener() {
+        saveButton = findViewById(R.id.button_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button ID: " + buttonSave.getId()
+                Toast.makeText(getApplicationContext(), "Button ID: " + saveButton.getId()
                         + "\n"
-                        + "Button Text: " + buttonSave.getText(), Toast.LENGTH_SHORT).show();
+                        + "Button Text: " + saveButton.getText(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        buttonSubmit = findViewById(R.id.button_submit);
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+        submitButton = findViewById(R.id.button_submit);
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button ID: " + buttonSubmit.getId()
+                Toast.makeText(getApplicationContext(), "Button ID: " + submitButton.getId()
                         + "\n"
-                        + "Button Text: " + buttonSubmit.getText(), Toast.LENGTH_SHORT).show();
+                        + "Button Text: " + submitButton.getText(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        buttonCancel = findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
+        cancelButton = findViewById(R.id.button_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button ID: " + buttonCancel.getId()
+                Toast.makeText(getApplicationContext(), "Button ID: " + cancelButton.getId()
                         + "\n"
-                        + "Button Text: " + buttonCancel.getText(), Toast.LENGTH_SHORT).show();
+                        + "Button Text: " + cancelButton.getText(), Toast.LENGTH_SHORT).show();
             }
         });
     }
