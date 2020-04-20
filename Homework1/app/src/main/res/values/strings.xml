@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Homework_1_App</string>
+    <string name="app_name">Homework 1</string>
+    <string name="menu_search">Button 1</string>
+
 </resources>

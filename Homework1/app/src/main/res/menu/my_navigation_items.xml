@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/Button_1"
+        android:title="Button 1"
+
+        android:visible="true" />
+
+    <item android:id="@+id/Button_2"
+        android:title="Button 2"
+        android:visible= "true"/>
+
+    <item android:id="@+id/Button_3"
+        android:title="Button 3"/>
+
+    <item android:id="@+id/Button_4"
+        android:title="Button 4"
+        android:visible="true" />
+
+    <item android:id="@+id/Button_5"
+        android:title="Button 5"
+        android:visible="true" />
+</menu>
