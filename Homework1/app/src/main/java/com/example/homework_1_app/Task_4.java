@@ -123,10 +123,18 @@ public class Task_4 extends AppCompatActivity {
                 Log.d(DEBUG_TAG, "here");
                 if (changeInXAxis > 0) {
 
+                    Log.d(DEBUG_TAG, "Index number: " + index);
+
                     try {
-                        Log.d(DEBUG_TAG, "Decrement Index!!!!!!!!!!!!");
-                        index ++;
-                        imageView.setImageResource((Integer) movieData.getItem(index).get("image"));
+                        if (index == movieData.getSize() - 1) {
+                            Log.d(DEBUG_TAG, "Index number inside try: " + index);
+                            Log.d(DEBUG_TAG, "Protection against index out of bounds issue...");
+
+                        } else {
+                            Log.d(DEBUG_TAG, "Decrement Index!!!!!!!!!!!!");
+                            index ++;
+                            imageView.setImageResource((Integer) movieData.getItem(index).get("image"));
+                        }
 
                     } catch (IndexOutOfBoundsException | NullPointerException e) {
                         e.printStackTrace();
