@@ -27,15 +27,18 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
         setContentView(R.layout.activity_main);
 
         fragment1 = new Fragment1();
+        fragment2 = new Fragment2();
+//        fragment3 = new Fragment3();
+
         loadTheFragment(fragment1);
     }
 
     private void loadTheFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
-//        fragmentTransaction.replace(R.id.fragment_container);
+
 //        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
 //        fragmentTransaction.commit();
     }
@@ -53,12 +56,16 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
 
     @Override
     public void goNext() {
-
+        Toast.makeText(getApplicationContext(),
+                "Next Button Clicked!", Toast.LENGTH_SHORT).show();
+        loadTheFragment(fragment2);
     }
 
     @Override
     public void goBack() {
-
+        Toast.makeText(getApplicationContext(),
+                "Prev Button Clicked!", Toast.LENGTH_SHORT).show();
+        loadTheFragment(fragment1);
     }
 
     @Override
