@@ -21,14 +21,14 @@ public class Fragment1 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentTracker.fragmentVisible(fragmentTitle);
-        view = inflater.inflate(R.layout.first_fragment, container, false);
-        Button button_next = view.findViewById(R.id.next_button);
-        button_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragmentTracker.goNext();
-            }
-        });
+        view = inflater.inflate(R.layout.fragment_first, container, false);
+//        Button button_next = view.findViewById(R.id.next_button);
+//        button_next.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                fragmentTracker.goNext();
+//            }
+//        });
 
         return view;
     }
@@ -48,7 +48,8 @@ public class Fragment1 extends Fragment {
         super.onDetach();
         EditText firstName = view.findViewById(R.id.first_name);
         EditText lastName = view.findViewById(R.id.last_name);
-        fragmentTracker.saveNameAndLastName(firstName.getText().toString(),
+        fragmentTracker.saveNameAndLastName(
+                firstName.getText().toString(),
                 lastName.getText().toString());
 
         view = null;
