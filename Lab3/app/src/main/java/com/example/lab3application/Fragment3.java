@@ -2,7 +2,6 @@ package com.example.lab3application;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,8 @@ public class Fragment3 extends Fragment {
         button_finished.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditText language = view.findViewById(R.id.language);
+                fragmentTracker.saveLanguage(language.getText().toString());
                 fragmentTracker.finished();
             }
         });
@@ -58,16 +59,7 @@ public class Fragment3 extends Fragment {
 
     @Override
     public void onDetach() {
-
-        //TODO: Fix onDetach issue!!!!
-
         super.onDetach();
-        EditText language = view.findViewById(R.id.language);
-        fragmentTracker.saveLanguage(language.toString());
-
-        Log.d(TAG, "language in onDetach(): " + language.toString());
-
         view = null;
     }
-
 }

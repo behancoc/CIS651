@@ -107,14 +107,15 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
 
     @Override
     public void saveLanguage(String language) {
-        Log.d(TAG, "The language is: " + language);
+        Log.d(TAG, "saveLanguage method called!");
         personInfo.setLanguage(language);
+
+        Log.d(TAG, "The language is: " + personInfo.getLanguage());
     }
 
     @Override
     public void finished() {
         Log.d(TAG, "Finished() called!");
-
         Intent intent = new Intent(this, SummaryActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("pi", personInfo);
