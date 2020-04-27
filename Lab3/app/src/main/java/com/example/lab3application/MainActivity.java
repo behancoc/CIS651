@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -150,6 +151,16 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
             if(e1.getX() < e2.getX()) {
                 if (next > MIN_VALUE) {
                     goBack();
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Swipe from the other side to proceed", Toast.LENGTH_SHORT);
+                    TextView view = (TextView) toast.getView().findViewById(android.R.id.message);
+                    try {
+                        view.setGravity(Gravity.CENTER);
+                        toast.show();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             } else {
