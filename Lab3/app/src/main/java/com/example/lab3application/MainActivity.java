@@ -94,25 +94,30 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
 
     @Override
     public void saveNameAndLastName(String firstName, String lastName) {
-        Log.d(TAG, "Your name is: " + firstName + " " + lastName);
+        personInfo.setFirstName(firstName);
+        personInfo.setLastName(lastName);
     }
 
     @Override
     public void saveCityAndZip(String city, String zip) {
-        Log.d(TAG, "You live in " + city + " " + zip);
+        personInfo.setCity(city);
+        personInfo.setZip(zip);
     }
+
 
     @Override
     public void saveLanguage(String language) {
-        Log.d(TAG, "You speak: " + language);
-
+        Log.d(TAG, "The language is: " + language);
+        personInfo.setLanguage(language);
     }
 
     @Override
     public void finished() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Log.d(TAG, "Finished() called!");
+
+        Intent intent = new Intent(this, SummaryActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra("personal info", personInfo);
+        intent.putExtra("pi", personInfo);
         startActivity(intent);
     }
 

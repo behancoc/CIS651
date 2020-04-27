@@ -2,6 +2,7 @@ package com.example.lab3application;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,10 @@ public class Fragment3 extends Fragment {
     private FragmentTracker fragmentTracker;
     private View view;
     private static final String fragmentTitle = "Personal Info";
+
+    private static final String TAG = Fragment3.class.getSimpleName();
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -53,9 +58,14 @@ public class Fragment3 extends Fragment {
 
     @Override
     public void onDetach() {
+
+        //TODO: Fix onDetach issue!!!!
+
         super.onDetach();
         EditText language = view.findViewById(R.id.language);
         fragmentTracker.saveLanguage(language.toString());
+
+        Log.d(TAG, "language in onDetach(): " + language.toString());
 
         view = null;
     }
