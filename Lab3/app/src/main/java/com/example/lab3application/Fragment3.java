@@ -43,7 +43,6 @@ public class Fragment3 extends Fragment {
                 fragmentTracker.goBack();
             }
         });
-
         return view;
     }
 

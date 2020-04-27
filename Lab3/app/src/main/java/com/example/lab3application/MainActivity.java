@@ -146,28 +146,21 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
     private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            Log.d(TAG, "onFling called");
             if(e1.getX() < e2.getX()) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Fling right", Toast.LENGTH_LONG);
-                toast.show();
-
                 if (next > MIN_VALUE) {
                     goBack();
                 }
 
-
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Fling Left", Toast.LENGTH_LONG);
-                toast.show();
-
                 Log.d(TAG, "Surface F!ing left!");
                 Log.d(TAG, "The current value of next is: " + next);
 
 
-
                 if (next == 3) {
-                    finished();
+                    Toast.makeText(getApplicationContext(),
+                            "Please click the FINISHED button",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     if (next <= MAX_VALUE) {
                         goNext();
