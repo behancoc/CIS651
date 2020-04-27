@@ -12,7 +12,9 @@
         android:id="@+id/language"
         android:imeOptions="actionDone"
         android:inputType="text"
+        android:textColorHint="@color/colorHint"
         android:hint="Language Preference"
+        android:textColor="@android:color/white"
         android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

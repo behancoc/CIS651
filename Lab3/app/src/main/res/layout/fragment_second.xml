@@ -11,6 +11,8 @@
         android:id="@+id/city_name"
         android:imeOptions="actionDone"
         android:hint="City"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/colorHint"
         android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -19,6 +21,8 @@
         android:id="@+id/zip_code"
         android:imeOptions="actionDone"
         android:hint="Zip Code"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/colorHint"
         android:singleLine="true"
         android:inputType="number"
         app:layout_constraintTop_toBottomOf="@id/city_name"

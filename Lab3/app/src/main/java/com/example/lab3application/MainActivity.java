@@ -25,16 +25,22 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
     private final PersonalInfo personInfo = new PersonalInfo();
     private int next = 1;
 
+    private static final int MIN_VALUE = 1;
+    private static final int MAX_VALUE = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mDetector = new GestureDetectorCompat(getApplicationContext(), new MyGestureListener());
 
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
         fragment3 = new Fragment3();
 
         loadFragment(fragment1);
+
     }
 
     private void loadFragment(Fragment fragment) {
@@ -50,6 +56,12 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
 //        this.mDetector.onTouchEvent(ev);
 //        return super.dispatchTouchEvent(ev);
 //    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
 
     @Override
     public void fragmentVisible(String s) {
@@ -129,14 +141,27 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Fling right", Toast.LENGTH_LONG);
                 toast.show();
-                //nextFragment(1);
+
+                if (next == 3) {
+                    finished();
+                } else {
+                    if (next <= MAX_VALUE) {
+                        goNext();
+                    }
+                }
+
             } else {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Fling Left", Toast.LENGTH_LONG);
                 toast.show();
-                //nextFragment(-1);
-            }
 
+                Log.d(TAG, "Surface F!ing left!");
+                Log.d(TAG, "The current value of next is: " + next);
+
+                if (next > MIN_VALUE) {
+                    goBack();
+                }
+            }
             return true;
         }
     }
