@@ -15,11 +15,12 @@ import androidx.fragment.app.Fragment;
 public class Fragment2 extends Fragment {
     private FragmentTracker fragmentTracker;
     private View view;
-    private static final String fragmentTitle = "Personal Info";
+    private static final String fragmentTitle = "Location Information";
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         fragmentTracker.fragmentVisible(fragmentTitle);
         view = inflater.inflate(R.layout.fragment_second, container, false);
         Button button_next = view.findViewById(R.id.next_button);

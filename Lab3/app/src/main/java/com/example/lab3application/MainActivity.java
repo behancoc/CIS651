@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
 
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
-//        fragment3 = new Fragment3();
+        fragment3 = new Fragment3();
 
         loadTheFragment(fragment1);
     }
@@ -37,10 +37,12 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+
         fragmentTransaction.commit();
 
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-//        fragmentTransaction.commit();
+
+
     }
 
 //    @Override

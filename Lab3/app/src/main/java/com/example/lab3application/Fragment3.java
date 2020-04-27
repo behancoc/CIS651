@@ -12,21 +12,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class Fragment1 extends Fragment {
+public class Fragment3 extends Fragment {
     private FragmentTracker fragmentTracker;
     private View view;
-    private static final String fragmentTitle = "Personal Information";
-
+    private static final String fragmentTitle = "Personal Info";
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         fragmentTracker.fragmentVisible(fragmentTitle);
-        view = inflater.inflate(R.layout.fragment_first, container, false);
-        Button button_next = view.findViewById(R.id.next_button);
-        button_next.setOnClickListener(new View.OnClickListener() {
+        view = inflater.inflate(R.layout.fragment_second, container, false);
+        Button button_finished = view.findViewById(R.id.next_button);
+        button_finished.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTracker.goNext();
+                fragmentTracker.finished();
+            }
+        });
+
+        Button button_previous = view.findViewById(R.id.prev_button);
+        button_previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTracker.goBack();
             }
         });
 
@@ -46,12 +54,13 @@ public class Fragment1 extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        EditText firstName = view.findViewById(R.id.first_name);
-        EditText lastName = view.findViewById(R.id.last_name);
-        fragmentTracker.saveNameAndLastName(
-                firstName.getText().toString(),
-                lastName.getText().toString());
+        EditText city = view.findViewById(R.id.city_name);
+        EditText zip = view.findViewById(R.id.zip_code);
+        fragmentTracker.saveCityAndZip(
+                city.getText().toString(),
+                zip.getText().toString());
 
         view = null;
     }
+
 }
