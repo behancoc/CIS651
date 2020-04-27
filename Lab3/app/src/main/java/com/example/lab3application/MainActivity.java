@@ -8,11 +8,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements FragmentTracker {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private Fragment fragment1;
     private Fragment fragment2;
     private Fragment fragment3;
@@ -30,19 +34,15 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
         fragment2 = new Fragment2();
         fragment3 = new Fragment3();
 
-        loadTheFragment(fragment1);
+        loadFragment(fragment1);
     }
 
-    private void loadTheFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-
         fragmentTransaction.commit();
-
-
-
     }
 
 //    @Override
@@ -58,30 +58,53 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
 
     @Override
     public void goNext() {
-        Toast.makeText(getApplicationContext(),
-                "Next Button Clicked!", Toast.LENGTH_SHORT).show();
-        loadTheFragment(fragment2);
+        next ++;
+        Log.d(TAG, "The current value of next is " + next);
+
+
+        switch(next) {
+            case 1:
+                loadFragment(fragment1);
+                break;
+            case 2:
+                loadFragment(fragment2);
+                break;
+            case 3:
+                loadFragment(fragment3);
+                break;
+        }
     }
 
     @Override
     public void goBack() {
-        Toast.makeText(getApplicationContext(),
-                "Prev Button Clicked!", Toast.LENGTH_SHORT).show();
-        loadTheFragment(fragment1);
+        next --;
+
+        switch (next) {
+            case 1:
+                loadFragment(fragment1);
+                break;
+            case 2:
+                loadFragment(fragment2);
+                break;
+            case 3:
+                loadFragment(fragment3);
+                break;
+        }
     }
 
     @Override
     public void saveNameAndLastName(String firstName, String lastName) {
-
+        Log.d(TAG, "Your name is: " + firstName + " " + lastName);
     }
 
     @Override
     public void saveCityAndZip(String city, String zip) {
-
+        Log.d(TAG, "You live in " + city + " " + zip);
     }
 
     @Override
     public void saveLanguage(String language) {
+        Log.d(TAG, "You speak: " + language);
 
     }
 

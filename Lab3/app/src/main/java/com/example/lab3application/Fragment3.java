@@ -21,8 +21,8 @@ public class Fragment3 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         fragmentTracker.fragmentVisible(fragmentTitle);
-        view = inflater.inflate(R.layout.fragment_second, container, false);
-        Button button_finished = view.findViewById(R.id.next_button);
+        view = inflater.inflate(R.layout.fragment_third, container, false);
+        Button button_finished = view.findViewById(R.id.finished_button);
         button_finished.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,11 +54,8 @@ public class Fragment3 extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        EditText city = view.findViewById(R.id.city_name);
-        EditText zip = view.findViewById(R.id.zip_code);
-        fragmentTracker.saveCityAndZip(
-                city.getText().toString(),
-                zip.getText().toString());
+        EditText language = view.findViewById(R.id.language);
+        fragmentTracker.saveLanguage(language.toString());
 
         view = null;
     }
