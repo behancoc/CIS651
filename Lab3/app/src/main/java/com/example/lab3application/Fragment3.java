@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 public class Fragment3 extends Fragment {
     private FragmentTracker fragmentTracker;
     private View view;
-    private static final String fragmentTitle = "Language Preference";
+    protected static final String fragmentTitle = "Language Preference";
 
     private static final String TAG = Fragment3.class.getSimpleName();
 

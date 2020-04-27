@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements FragmentTracker {
@@ -28,10 +29,15 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
     private static final int MIN_VALUE = 1;
     private static final int MAX_VALUE = 3;
 
+    private TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textView = findViewById(R.id.title);
+
 
         mDetector = new GestureDetectorCompat(getApplicationContext(), new MyGestureListener());
 
@@ -51,11 +57,7 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
         fragmentTransaction.commit();
     }
 
-//    @Override
-//    public boolean dispatchTouchEvent(MotionEvent ev) {
-//        this.mDetector.onTouchEvent(ev);
-//        return super.dispatchTouchEvent(ev);
-//    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.mDetector.onTouchEvent(event);
@@ -65,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
 
     @Override
     public void fragmentVisible(String s) {
-
     }
 
     @Override
@@ -77,12 +78,17 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
         switch(next) {
             case 1:
                 loadFragment(fragment1);
+                if (fragment1.isVisible()) {
+                    textView.setText(Fragment1.fragmentTitle);
+                }
                 break;
             case 2:
                 loadFragment(fragment2);
+                textView.setText(Fragment2.fragmentTitle);
                 break;
             case 3:
                 loadFragment(fragment3);
+                textView.setText(Fragment3.fragmentTitle);
                 break;
         }
     }
@@ -94,12 +100,15 @@ public class MainActivity extends AppCompatActivity implements FragmentTracker {
         switch (next) {
             case 1:
                 loadFragment(fragment1);
+                textView.setText(Fragment1.fragmentTitle);
                 break;
             case 2:
                 loadFragment(fragment2);
+                textView.setText(Fragment2.fragmentTitle);
                 break;
             case 3:
                 loadFragment(fragment3);
+                textView.setText(Fragment3.fragmentTitle);
                 break;
         }
     }

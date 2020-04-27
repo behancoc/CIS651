@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 public class Fragment2 extends Fragment {
     private FragmentTracker fragmentTracker;
     private View view;
-    private static final String fragmentTitle = "Location Information";
+    protected static final String fragmentTitle = "Location Information";
 
     @Nullable
     @Override

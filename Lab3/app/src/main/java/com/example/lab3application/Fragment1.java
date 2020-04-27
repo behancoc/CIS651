@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 public class Fragment1 extends Fragment {
     private FragmentTracker fragmentTracker;
     private View view;
-    private static final String fragmentTitle = "Personal Information";
+    protected static final String fragmentTitle = "Personal Information";
 
     @Nullable
     @Override
