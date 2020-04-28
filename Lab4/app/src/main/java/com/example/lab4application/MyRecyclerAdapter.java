@@ -23,7 +23,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
     private List<Map<String, ?>> movieData;
     private List<Map<String, ?>>filteredMovieData;
-    private AdapterView.OnItemClickListener onItemClickListener = null;
+    private OnListItemClickListener onListItemClickListener = null;
 
     public MyRecyclerAdapter(List<Map<String, ?>> list) {
         movieData = filteredMovieData = list;
@@ -67,13 +67,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public MyRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_view_layout, parent, false);
-
         final ViewHolder viewHolder = new ViewHolder(view);
-       view.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               if(onItemClickListener !=null) {
-//                   onItemClickListener.onItemClick(view, viewHolder.getAbsoluteAdapterPosition());
+               if(onListItemClickListener !=null) {
+                   onListItemClickListener.onItemClick(view, viewHolder.getAdapterPosition()    );
+               }
+           }
+       });
+
+       view.setOnLongClickListener(new View.OnLongClickListener() {
+           @Override
+           public boolean onLongClick(View v) {
+               if(onListItemClickListener != null) {
+                   onListItemClickListener.onItemLongClick(view, viewHolder.getAdapterPosition());
+                   return true;
                }
            }
        });
@@ -95,7 +104,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         return filteredMovieData.size();
     }
 
-    
+
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -107,9 +116,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-//            movieName = (TextView) itemView.findViewById(R.id.movie_name);
-//            movieYear = (TextView) itemView.findViewById(R.id.movie_year);
-//            posterImage = (ImageView) itemView.findViewById(R.id.poster_photo);
+            movieName = (TextView) itemView.findViewById(R.id.movie_name);
+            movieYear = (TextView) itemView.findViewById(R.id.movie_year);
+            posterImage = (ImageView) itemView.findViewById(R.id.poster_photo);
         }
 
     }
