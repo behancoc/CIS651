@@ -2,6 +2,9 @@ package com.example.lab4application;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.my_toolbar);
 
         setSupportActionBar(toolbar);
-
-
     }
 
     @Override
@@ -41,7 +45,29 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         layoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(layoutManager);
+        myRecyclerAdapter.setOnItemClickListener(new MyRecyclerAdapter.OnListItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Map hashMap = myRecyclerAdapter.getItem(position);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+                MovieDetailFragment movieDetailFragment = MovieDetailFragment
+                        .newInstance((int) hashMap.get("image"),
+                                           hashMap.get("name").toString(),
+                                           hashMap.get("year").toString(),
+                                           Float.parseFloat(hashMap.get("rating").toString()),
+                                           hashMap.get("description").toString());
+                fragmentTransaction.replace(R.id.detail_fragment, movieDetailFragment);
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                fragmentTransaction.commit();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
         recyclerView.setAdapter(myRecyclerAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }

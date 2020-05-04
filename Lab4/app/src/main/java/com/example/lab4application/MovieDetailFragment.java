@@ -46,6 +46,6 @@ public class MovieDetailFragment extends Fragment {
         TextView descriptionText = view.findViewById(R.id.description);
         descriptionText.setText(args.getString("description"));
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 }

@@ -29,6 +29,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         movieData = filteredMovieData = list;
     }
 
+    public void setOnItemClickListener(OnListItemClickListener listener) {
+        onListItemClickListener = listener;
+    }
+
     public interface OnListItemClickListener {
         void onItemClick(View view, int position);
         void onItemLongClick(View view, int position);
@@ -42,12 +46,15 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            movieName = (TextView) itemView.findViewById(R.id.movie_name);
-            movieYear = (TextView) itemView.findViewById(R.id.movie_year);
-            posterImage = (ImageView) itemView.findViewById(R.id.poster_photo);
+            movieName = itemView.findViewById(R.id.movie_name);
+            movieYear = itemView.findViewById(R.id.movie_year);
+            posterImage = itemView.findViewById(R.id.poster_photo);
         }
     }
 
+    public Map getItem(int i) {
+        return filteredMovieData.get(i);
+    }
 
     @Override
     public Filter getFilter() {
@@ -91,7 +98,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
            @Override
            public void onClick(View v) {
                if(onListItemClickListener !=null) {
-                   onListItemClickListener.onItemClick(view, viewHolder.getAdapterPosition());
+                   onListItemClickListener.onItemClick(view, viewHolder.getAbsoluteAdapterPosition());
+                   Log.d(TAG, "onClick fired!");
                }
            }
        });
@@ -105,15 +113,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                } else { return false; }
            }
        });
-
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyRecyclerAdapter.ViewHolder holder, int position) {
-
         holder.movieName.setText(filteredMovieData.get(position).get("name").toString());
-
         holder.movieYear.setText(filteredMovieData.get(position).get("year").toString());
         holder.posterImage.setImageResource(Integer.parseInt(filteredMovieData.get(position).get("image").toString()));
     }
@@ -126,7 +131,5 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-
-        Log.d(TAG,"onAttachedToRecyclerView method called!" );
     }
 }
