@@ -6,13 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +24,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
     public MyRecyclerAdapter(List<Map<String, ?>> list) {
         movieData = filteredMovieData = list;
+    }
+
+    public interface OnListItemClickListener {
+        void onItemClick(View view, int position);
+        void onItemLongClick(View view, int position);
     }
 
 
@@ -66,13 +68,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     @Override
     public MyRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_view_layout, parent, false);
+                .inflate(R.layout.fragment_layout, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
         view.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
                if(onListItemClickListener !=null) {
-                   onListItemClickListener.onItemClick(view, viewHolder.getAdapterPosition()    );
+                   onListItemClickListener.onItemClick(view, viewHolder.getAdapterPosition());
                }
            }
        });
@@ -83,7 +85,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                if(onListItemClickListener != null) {
                    onListItemClickListener.onItemLongClick(view, viewHolder.getAdapterPosition());
                    return true;
-               }
+               } else { return false; }
            }
        });
 
@@ -94,17 +96,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public void onBindViewHolder(@NonNull MyRecyclerAdapter.ViewHolder holder, int position) {
         holder.movieName.setText(filteredMovieData.get(position).get("name").toString());
         holder.movieYear.setText(filteredMovieData.get(position).get("year").toString());
-        holder.posterImage.setImageResource(Integer.parseInt(
-                filteredMovieData.get(position).get("image").toString()));
-
+        holder.posterImage.setImageResource(Integer.parseInt(filteredMovieData.get(position).get("image").toString()));
     }
 
     @Override
     public int getItemCount() {
         return filteredMovieData.size();
     }
-
-
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -115,13 +113,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             movieName = (TextView) itemView.findViewById(R.id.movie_name);
             movieYear = (TextView) itemView.findViewById(R.id.movie_year);
             posterImage = (ImageView) itemView.findViewById(R.id.poster_photo);
         }
-
     }
-
-
 }
