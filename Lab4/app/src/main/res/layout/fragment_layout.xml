@@ -23,13 +23,15 @@
         android:id="@+id/title_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/large_image"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/large_image"
+        app:layout_constraintBottom_toTopOf="@id/year_text"
         app:layout_constraintHorizontal_weight="3"/>
 
     <EditText
         android:id="@+id/year_text"
         android:layout_width="0dp"
+        android:inputType="number"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/large_image"
         app:layout_constraintRight_toRightOf="parent"
