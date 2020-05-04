@@ -13,8 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import java.lang.reflect.Modifier;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,11 +36,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         layoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(layoutManager);
+
         recyclerView.setAdapter(myRecyclerAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
                         "onQueryTextSubmit()",
                         Toast.LENGTH_SHORT).show();
                 return true;
-//                return false;
             }
 
             @Override
@@ -70,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                         "onQueryTextChange()",
                         Toast.LENGTH_SHORT).show();
                 return true;
-//                return false;
             }
         });
 
