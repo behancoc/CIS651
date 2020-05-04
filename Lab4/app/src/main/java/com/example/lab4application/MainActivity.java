@@ -56,17 +56,22 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getApplicationContext(),
-                        "onQueryTextSubmit()",
-                        Toast.LENGTH_SHORT).show();
+//                Toast toast = Toast.makeText(getApplicationContext(),
+//                        "onQueryTextSubmit()",
+//                        Toast.LENGTH_SHORT);
+//
+//                toast.show();
+                myRecyclerAdapter.getFilter().filter(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Toast.makeText(getApplicationContext(),
-                        "onQueryTextChange()",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),
+//                        "onQueryTextChange()",
+//                        Toast.LENGTH_SHORT).show();
+
+                myRecyclerAdapter.getFilter().filter(newText);
                 return true;
             }
         });

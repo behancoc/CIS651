@@ -3,6 +3,7 @@ package com.example.lab4application;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     private List<Map<String, ?>>filteredMovieData;
     private OnListItemClickListener onListItemClickListener = null;
 
+    private static final String TAG = MyRecyclerAdapter.class.getSimpleName();
+
     public MyRecyclerAdapter(List<Map<String, ?>> list) {
         movieData = filteredMovieData = list;
     }
@@ -29,6 +32,20 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public interface OnListItemClickListener {
         void onItemClick(View view, int position);
         void onItemLongClick(View view, int position);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView movieName;
+        public TextView movieYear;
+        public ImageView posterImage;
+
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            movieName = (TextView) itemView.findViewById(R.id.movie_name);
+            movieYear = (TextView) itemView.findViewById(R.id.movie_year);
+            posterImage = (ImageView) itemView.findViewById(R.id.poster_photo);
+        }
     }
 
 
@@ -68,7 +85,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     @Override
     public MyRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_layout, parent, false);
+                .inflate(R.layout.recycler_view_layout, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
         view.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -94,7 +111,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull MyRecyclerAdapter.ViewHolder holder, int position) {
+
         holder.movieName.setText(filteredMovieData.get(position).get("name").toString());
+
         holder.movieYear.setText(filteredMovieData.get(position).get("year").toString());
         holder.posterImage.setImageResource(Integer.parseInt(filteredMovieData.get(position).get("image").toString()));
     }
@@ -104,18 +123,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         return filteredMovieData.size();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView movieName;
-        public TextView movieYear;
-        public ImageView posterImage;
-
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            movieName = (TextView) itemView.findViewById(R.id.movie_name);
-            movieYear = (TextView) itemView.findViewById(R.id.movie_year);
-            posterImage = (ImageView) itemView.findViewById(R.id.poster_photo);
-        }
+        Log.d(TAG,"onAttachedToRecyclerView method called!" );
     }
 }
