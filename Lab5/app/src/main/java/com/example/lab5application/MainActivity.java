@@ -2,6 +2,9 @@ package com.example.lab5application;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -64,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
         xmlAnimatorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Animator spinSet = (AnimatorSet) AnimatorInflater
+                        .loadAnimator(getApplicationContext(), R.animator.custom_animator);
 
+                spinSet.setTarget(imageView);
+                spinSet.start();
             }
         });
     }
