@@ -1,10 +1,12 @@
 package com.example.lab5application;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         final Button nextActivityButton = (Button) findViewById(R.id.next_activity_button);
         nextActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
+                NextActivity(view);
             }
         });
 
@@ -74,5 +76,12 @@ public class MainActivity extends AppCompatActivity {
                 spinSet.start();
             }
         });
+    }
+
+    public void NextActivity(View view) {
+        Intent intent = new Intent(this, MasterDetailFlowActivity.class);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(this, view, "newActivity");
+        startActivity(intent, activityOptionsCompat.toBundle());
     }
 }

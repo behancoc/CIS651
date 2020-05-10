@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
 import android.os.Bundle;
+import android.view.View;
 
-public class MasterDetailFlowActivity extends AppCompatActivity {
+public class MasterDetailFlowActivity extends AppCompatActivity implements
+        com.example.lab5application.ListFragment.onItemSelectedListener {
 
     private boolean twoPane;
 
@@ -24,6 +26,11 @@ public class MasterDetailFlowActivity extends AppCompatActivity {
         if(findViewById(R.id.detail_container)!= null) {
             twoPane = true;
         }
+
+    }
+
+    @Override
+    public void OnListItemSelected(View sharedView, int imageResourceID, String title, String year) {
 
     }
 }
