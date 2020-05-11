@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_about_me">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.homework2app.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
+        android:id="@+id/nav_about_me"
+        android:name="com.example.homework2app.ui.about.AboutMeFragment"
+        android:label="@string/menu_about_me"
+        tools:layout="@layout/fragment_home" >
 
         <action
             android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
@@ -17,12 +17,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_home_second"
-        android:name="com.example.homework2app.ui.home.HomeSecondFragment"
+        android:name="com.example.homework2app.ui.about.HomeSecondFragment"
         android:label="@string/home_second"
         tools:layout="@layout/fragment_home_second">
         <action
             android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-            app:destination="@id/nav_home" />
+            app:destination="@id/nav_about_me" />
 
         <argument
             android:name="myArg"
@@ -30,14 +30,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.homework2app.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:id="@+id/nav_view_pager"
+        android:name="com.example.homework2app.ui.viewpager.MasterDetailFragment"
+        android:label="@string/menu_view_pager"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.homework2app.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:id="@+id/nav_master_detail"
+        android:name="com.example.homework2app.ui.masterdetail.ViewPagerFragment"
+        android:label="@string/menu_master_detail"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>
