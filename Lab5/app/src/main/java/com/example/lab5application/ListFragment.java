@@ -50,7 +50,7 @@ public class ListFragment extends Fragment {
             myRecyclerAdapter.setOnItemClickListener(clickListener);
         } catch (ClassCastException e) {
             e.printStackTrace();
-            //throw new ClassCastException(context.toString() + " must implement EventTrack");
+            throw new ClassCastException(context.toString() + " must implement EventTrack");
         }
     }
 }

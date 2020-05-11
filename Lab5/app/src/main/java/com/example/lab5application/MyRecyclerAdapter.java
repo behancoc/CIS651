@@ -109,7 +109,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick callback!!!!!!!!!!!!!");
-                Log.d(TAG, "onClick: " + clickListener.toString());
                 if(clickListener != null) {
                     clickListener.onListItemSelected(view,
                             Integer.parseInt(filteredMovieData.get(position).get("image").toString()),
