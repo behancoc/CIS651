@@ -1,14 +1,18 @@
 package com.example.homework2app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.homework2app.ui.masterdetail.MasterDetailFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -22,6 +26,8 @@ import androidx.transition.Fade;
 
 public class MainActivity extends AppCompatActivity
         implements MasterDetailFragment.OnItemSelectedListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -59,6 +65,19 @@ public class MainActivity extends AppCompatActivity
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Log.d(TAG, "User clicked actions settings!");
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
