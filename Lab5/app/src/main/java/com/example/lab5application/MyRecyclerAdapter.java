@@ -1,5 +1,6 @@
 package com.example.lab5application;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
     private List<Map<String, ?>> movieData;
     private List<Map<String, ?>>filteredMovieData;
-    private AdapterView.OnItemSelectedListener clickListener = null;
+    private ListFragment.OnItemSelectedListener clickListener = null;
 
     private static final String TAG = MyRecyclerAdapter.class.getSimpleName();
 
@@ -30,7 +31,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         movieData = filteredMovieData = list;
     }
 
-    public void setOnItemClickListener(AdapterView.OnItemSelectedListener listener) {
+    public void setOnItemClickListener(ListFragment.OnItemSelectedListener listener) {
         clickListener = listener;
     }
 
@@ -95,25 +96,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         final View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_view_layout, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
-//        view.setOnClickListener(new View.OnClickListener() {
-//           @Override
-//           public void onClick(View v) {
-//               if(onListItemClickListener !=null) {
-//                   onListItemClickListener.onItemClick(view, viewHolder.getAbsoluteAdapterPosition());
-//                   Log.d(TAG, "onClick fired!");
-//               }
-//           }
-//       });
-//
-//       view.setOnLongClickListener(new View.OnLongClickListener() {
-//           @Override
-//           public boolean onLongClick(View v) {
-//               if(onListItemClickListener != null) {
-//                   onListItemClickListener.onItemLongClick(view, viewHolder.getAdapterPosition());
-//                   return true;
-//               } else { return false; }
-//           }
-//       });
         return viewHolder;
     }
 
@@ -123,14 +105,17 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         holder.movieYear.setText(filteredMovieData.get(position).get("year").toString());
         holder.posterImage.setImageResource(Integer.parseInt(filteredMovieData.get(position).get("image").toString()));
         ViewCompat.setTransitionName(holder.posterImage, filteredMovieData.get(position).get("name").toString());
-
         holder.posterImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "onClick callback!!!!!!!!!!!!!");
+                Log.d(TAG, "onClick: " + clickListener.toString());
                 if(clickListener != null) {
-
+                    clickListener.onListItemSelected(view,
+                            Integer.parseInt(filteredMovieData.get(position).get("image").toString()),
+                            filteredMovieData.get(position).get("name").toString(),
+                            filteredMovieData.get(position).get("year").toString());
                 }
-
             }
         });
     }

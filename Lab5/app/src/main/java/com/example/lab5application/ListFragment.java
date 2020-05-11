@@ -16,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class ListFragment extends Fragment {
-    public interface  onItemSelectedListener {
-        public void OnListItemSelected(View sharedView, int imageResourceID,
+    public interface  OnItemSelectedListener {
+        public void onListItemSelected(View sharedView, int imageResourceID,
                                        String title, String year);
     }
-    AdapterView.OnItemSelectedListener clickListener;
+
+    OnItemSelectedListener clickListener;
     private MovieData movieData = new MovieData();
     private final MyRecyclerAdapter myRecyclerAdapter = new MyRecyclerAdapter(movieData.getMoviesList());
 
@@ -31,7 +32,8 @@ public class ListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.list_fragment, container, false);
         RecyclerView recyclerView = rootView.findViewById(R.id.mainRecyclerView);
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(
+                4, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         staggeredGridLayoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -44,10 +46,11 @@ public class ListFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            clickListener = (AdapterView.OnItemSelectedListener) context;
+            clickListener = (OnItemSelectedListener) context;
             myRecyclerAdapter.setOnItemClickListener(clickListener);
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement EventTrack");
+            e.printStackTrace();
+            //throw new ClassCastException(context.toString() + " must implement EventTrack");
         }
     }
 }

@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void NextActivity(View view) {
-        Intent intent = new Intent(this, MasterDetailFlowActivity.class);
+        Intent intent = new Intent(this, NextActivity.class);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat
                 .makeSceneTransitionAnimation(this, view, "newActivity");
         startActivity(intent, activityOptionsCompat.toBundle());

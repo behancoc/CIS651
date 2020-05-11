@@ -15,7 +15,8 @@ import androidx.fragment.app.Fragment;
 public class DetailFragment extends Fragment {
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.detail_fragment, container, false);
         ImageView imageView = (ImageView) rootView.findViewById(R.id.img_poster);
         TextView title = (TextView) rootView.findViewById(R.id.title);
@@ -26,6 +27,5 @@ public class DetailFragment extends Fragment {
         ViewCompat.setTransitionName(imageView, args.getString("mtitle"));
         year.setText(args.getString("myear"));
         return rootView;
-
     }
 }
