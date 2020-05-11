@@ -20,7 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.transition.Fade;
 
-public class MainActivity extends AppCompatActivity implements MasterDetailFragment.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements MasterDetailFragment.OnItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -44,15 +45,6 @@ public class MainActivity extends AppCompatActivity implements MasterDetailFragm
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-//        if(savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.main_container, new ListFragment()).commit();
-//        }
-//        twoPane = false;
-//        if (findViewById(R.id.detail_container) != null) {
-//            twoPane = true;
-//        }
     }
 
     @Override
@@ -78,23 +70,14 @@ public class MainActivity extends AppCompatActivity implements MasterDetailFragm
         Fragment detailFragment = new DetailFragment();
         detailFragment.setArguments(args);
 
-        if (twoPane) {
-//            detailFragment.setEnterTransition(new Slide(Gravity.TOP));
-//            detailFragment.setExitTransition(new Slide(Gravity.BOTTOM));
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.detail_container, detailFragment)
-//                    .addToBackStack(null)
-//                    .commit();
-        } else {
-            detailFragment.setSharedElementEnterTransition(new DetailsTransition());
-            detailFragment.setEnterTransition(new Fade());
-            detailFragment.setExitTransition(new Fade());
-            detailFragment.setSharedElementReturnTransition(new DetailsTransition());
-            getSupportFragmentManager().beginTransaction()
-                    .addSharedElement(sharedView, ViewCompat.getTransitionName(sharedView))
-                    .replace(R.id.nav_host_fragment, detailFragment)
-                    .addToBackStack(null)
-                    .commit();
-        }
+        detailFragment.setSharedElementEnterTransition(new DetailsTransition());
+        detailFragment.setEnterTransition(new Fade());
+        detailFragment.setExitTransition(new Fade());
+        detailFragment.setSharedElementReturnTransition(new DetailsTransition());
+        getSupportFragmentManager().beginTransaction()
+                .addSharedElement(sharedView, ViewCompat.getTransitionName(sharedView))
+                .replace(R.id.nav_host_fragment, detailFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

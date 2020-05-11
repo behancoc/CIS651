@@ -1,9 +1,11 @@
 package com.example.homework2app.ui.about;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,20 +16,32 @@ import com.example.homework2app.R;
 
 public class AboutMeFragment extends Fragment {
 
-//    private HomeViewModel homeViewModel;
-//
-//    public View onCreateView(@NonNull LayoutInflater inflater,
-//            ViewGroup container, Bundle savedInstanceState) {
-//        homeViewModel =
-//                ViewModelProviders.of(this).get(HomeViewModel.class);
-//        View root = inflater.inflate(R.layout.fragment_about_me, container, false);
-//        final TextView textView = root.findViewById(R.id.text_home);
-//        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-//        return root;
-//    }
+    private AboutMeViewModel aboutMeViewModel;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_about_me, container, false);
+        final TextView textView = view.findViewById(R.id.about_me_header);
+        final ImageView imageView = view.findViewById(R.id.imageView_about_me);
+
+        aboutMeViewModel = ViewModelProviders.of(this).get(AboutMeViewModel.class);
+
+        aboutMeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                textView.setText(s);
+                textView.setGravity(Gravity.CENTER);
+            }
+        });
+
+        aboutMeViewModel.getImageView().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                imageView.setImageResource(R.drawable.brandon_hancock_image);
+            }
+        });
+
+        return view;
+    }
 }
