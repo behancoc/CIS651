@@ -14,7 +14,9 @@ public class AboutMeViewModel extends ViewModel {
 
     public AboutMeViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("My name is Brandon Hancock. I am a Software Developer living in San Francisco, CA.");
+        mText.setValue("My name is Brandon Hancock.\n " + "\n" +
+                "I am a Software Developer living in San Francisco, CA. \n" +  "\n" +
+                "My interests include Android Development, Unity, Augmented Reality & Virtual Reality.");
 
         mImageView = new MutableLiveData<Integer>();
         mImageView.setValue(R.drawable.brandon_hancock_image);

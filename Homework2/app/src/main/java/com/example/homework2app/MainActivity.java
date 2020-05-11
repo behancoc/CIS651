@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.homework2app.ui.masterdetail.MasterDetailFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     private AppBarConfiguration mAppBarConfiguration;
 
     public boolean twoPane;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,16 @@ public class MainActivity extends AppCompatActivity
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        View headerView = navigationView.getHeaderView(0);
+        ImageView imageView = (ImageView) headerView.findViewById(R.id.imageView);
+        //imageView.setImageResource(R.drawable.brandon_hancock_image);
+
+        TextView textView = (TextView) headerView.findViewById(R.id.name);
+        textView.setText("Brandon E. Hancock");
+
+        TextView subTextView = (TextView) headerView.findViewById(R.id.email);
+        subTextView.setText("brandon.e.hancock@outlook.com");
     }
 
     @Override
