@@ -1,4 +1,4 @@
-package com.example.kevin.teachlayout;
+package com.example.homework2app;
 
 import com.example.homework2app.R;
 

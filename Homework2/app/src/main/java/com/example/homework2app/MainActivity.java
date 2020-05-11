@@ -1,9 +1,16 @@
 package com.example.homework2app;
 
 import android.os.Bundle;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.View;
 
+import com.example.homework2app.ui.masterdetail.MasterDetailFragment;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -11,10 +18,13 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.transition.Fade;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MasterDetailFragment.OnItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    public boolean twoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+//        if(savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.main_container, new ListFragment()).commit();
+//        }
+//        twoPane = false;
+//        if (findViewById(R.id.detail_container) != null) {
+//            twoPane = true;
+//        }
     }
 
     @Override
@@ -48,5 +67,34 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onListItemSelected(View sharedView, int imageResourceID, String title, String year) {
+        Bundle args = new Bundle();
+        args.putInt("img_id", imageResourceID);
+        args.putString("mtitle", title);
+        args.putString("myear", year);
+        Fragment detailFragment = new DetailFragment();
+        detailFragment.setArguments(args);
+
+        if (twoPane) {
+//            detailFragment.setEnterTransition(new Slide(Gravity.TOP));
+//            detailFragment.setExitTransition(new Slide(Gravity.BOTTOM));
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.detail_container, detailFragment)
+//                    .addToBackStack(null)
+//                    .commit();
+        } else {
+            detailFragment.setSharedElementEnterTransition(new DetailsTransition());
+            detailFragment.setEnterTransition(new Fade());
+            detailFragment.setExitTransition(new Fade());
+            detailFragment.setSharedElementReturnTransition(new DetailsTransition());
+            getSupportFragmentManager().beginTransaction()
+                    .addSharedElement(sharedView, ViewCompat.getTransitionName(sharedView))
+                    .replace(R.id.nav_host_fragment, detailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }
