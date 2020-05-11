@@ -1,23 +1,18 @@
 package com.example.homework2app.ui.viewpager;
 
-
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-
-import com.example.homework2app.R;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
+    private static final int item = 1;
 
-
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public ViewPagerAdapter(@NonNull MovieCardFragment fragmentActivity) {
         super(fragmentActivity);
     }
-
 
     @NonNull
     @Override
@@ -27,6 +22,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return item;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 }

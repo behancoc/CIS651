@@ -25,6 +25,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.transition.Fade;
+import androidx.viewpager2.widget.ViewPager2;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements MasterDetailFragment.OnItemSelectedListener {
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity
 
     public boolean twoPane;
     private ImageView imageView;
+    private ViewPager2 viewPager2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +62,14 @@ public class MainActivity extends AppCompatActivity
 
         View headerView = navigationView.getHeaderView(0);
         ImageView imageView = (ImageView) headerView.findViewById(R.id.imageView);
-        //imageView.setImageResource(R.drawable.brandon_hancock_image);
+        imageView.setImageResource(R.drawable.brandon_hancock_image);
 
         TextView textView = (TextView) headerView.findViewById(R.id.name);
         textView.setText("Brandon E. Hancock");
 
         TextView subTextView = (TextView) headerView.findViewById(R.id.email);
         subTextView.setText("brandon.e.hancock@outlook.com");
+
     }
 
     @Override
