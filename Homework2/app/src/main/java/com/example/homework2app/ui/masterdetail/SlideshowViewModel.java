@@ -1,4 +1,4 @@
-package com.example.homework2app.ui.slideshow;
+package com.example.homework2app.ui.masterdetail;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

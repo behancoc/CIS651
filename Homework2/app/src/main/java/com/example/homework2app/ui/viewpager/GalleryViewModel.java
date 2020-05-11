@@ -1,4 +1,4 @@
-package com.example.homework2app.ui.gallery;
+package com.example.homework2app.ui.viewpager;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

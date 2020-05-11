@@ -1,4 +1,4 @@
-package com.example.homework2app.ui.home;
+package com.example.homework2app.ui.about;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
