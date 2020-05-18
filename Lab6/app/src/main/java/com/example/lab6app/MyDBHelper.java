@@ -97,7 +97,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     public void updateContact(long contactId, Context context, Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("UPDATE " + TABLE_NAME + " SET name='" + contact.getFirstName() +
+        db.execSQL("UPDATE " + TABLE_NAME + " SET firstname='" + contact.getFirstName() +
                 "', lastname ='" + contact.getLastName() + "', phone ='" + contact.getPhoneNumber()
                 + "' WHERE _id='" + contactId + "'");
 
