@@ -26,11 +26,20 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     private static final String TAG = MyRecyclerAdapter.class.getSimpleName();
 
     SimpleDateFormat localDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
     private class UserModel {
         public String displayName;
         public String email;
         public String phone;
         public String date;
+
+        public UserModel (String displayName, String email, String phone) {
+            this.displayName = displayName;
+            this.email = email;
+            this.phone = phone;
+
+        }
+
         public UserModel (String displayName, String email, String phone, String date) {
             this.displayName = displayName;
             this.email = email;
@@ -38,6 +47,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             this.date = date;
         }
     }
+
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference userReference = firebaseDatabase.getReference("Users");
     private List<UserModel> usersList;
@@ -51,11 +61,15 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, dataSnapshot.toString());
+//                UserModel userModel = new UserModel(dataSnapshot.child("displayName").getValue()
+//                        .toString(), dataSnapshot.child("email").getValue().toString(),
+//                        dataSnapshot.child("phone").getValue().toString(),
+//                        localDateFormat.format(new Date(Long.parseLong(dataSnapshot
+//                                .child("timestamp").getValue().toString()))));
+
                 UserModel userModel = new UserModel(dataSnapshot.child("displayName").getValue()
                         .toString(), dataSnapshot.child("email").getValue().toString(),
-                        dataSnapshot.child("phone").getValue().toString(),
-                        localDateFormat.format(new Date(Long.parseLong(dataSnapshot
-                                .child("timestamp").getValue().toString()))));
+                        dataSnapshot.child("phone").getValue().toString());
 
                 usersList.add(userModel);
                 MyRecyclerAdapter.this.notifyItemInserted(usersList.size() - 1);
@@ -93,10 +107,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         public ViewHolder(View view) {
             super(view);
 
-            firstNameView = (TextView) view.findViewById(R.id.first_name_view);
-            emailView = (TextView) view.findViewById(R.id.email_view);
-            phoneView = (TextView) view.findViewById(R.id.phone_view);
-            dateView = (TextView) view.findViewById(R.id.date_view);
+            firstNameView = view.findViewById(R.id.first_name_view);
+            emailView = view.findViewById(R.id.email_view);
+            phoneView = view.findViewById(R.id.phone_view);
+            dateView = view.findViewById(R.id.date_view);
         }
     }
 

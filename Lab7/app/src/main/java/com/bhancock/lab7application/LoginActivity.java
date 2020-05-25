@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
+
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
 
@@ -80,6 +82,8 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),
                                         "SignUp successful.  Verification email sent!",
                                         Toast.LENGTH_SHORT).show();
+                                saveUserDataToDB();
+                                updateUI();
                             }
                         }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
                             @Override
@@ -107,21 +111,31 @@ public class LoginActivity extends AppCompatActivity {
                 if(mEmailEditText.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(),
                             "Please enter your email address", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                mFirebaseAuth.sendPasswordResetEmail(mEmailEditText.getText().toString())
-                        .addOnFailureListener(LoginActivity.this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LoginActivity.this,
-                                e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(LoginActivity.this,
-                                "Email sent!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                try {
+                    mFirebaseAuth.sendPasswordResetEmail(mEmailEditText.getText().toString())
+                            .addOnFailureListener(LoginActivity.this, new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(LoginActivity.this,
+                                            e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(LoginActivity.this,
+                                    "Email sent!", Toast.LENGTH_SHORT).show();
+                            updateUI();
+                        }
+                    });
+
+                } catch (IllegalArgumentException e) {
+                    Log.d(TAG, e.getMessage());
+                    Toast.makeText(getApplicationContext(),
+                            "Your email address is not known", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -135,22 +149,31 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                mFirebaseUser.sendEmailVerification()
-                        .addOnSuccessListener(LoginActivity.this, new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(),
-                                "Verification email sent!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(),
-                                e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+                try {
+                    mFirebaseUser.sendEmailVerification()
+                            .addOnSuccessListener(LoginActivity.this, new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Verification email sent!",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(),
+                                    e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } catch (NullPointerException e) {
+                    Log.d(TAG, e.getMessage());
+                    Toast.makeText(getApplicationContext(),
+                            "Please enter an email address", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
