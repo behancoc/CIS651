@@ -3,6 +3,7 @@ package com.bhancock.lab7application;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
 
     Button mSignUpButton;
     Button mResetPasswordButton;
+    Button mSendEmailVerificationButton;
+    Button mLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mSignUpButton = findViewById(R.id.signup_button);
         mResetPasswordButton = findViewById(R.id.reset_password_button);
+        mSendEmailVerificationButton = findViewById(R.id.resend_email_verification_button);
+        mLoginButton = findViewById(R.id.login_button);
+
 
 
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +120,75 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(LoginActivity.this,
                                 "Email sent!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        mSendEmailVerificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mFirebaseAuth == null) {
+                    Toast.makeText(getApplicationContext(),
+                            "Please login to resend verification email",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                mFirebaseUser.sendEmailVerification()
+                        .addOnSuccessListener(LoginActivity.this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext(),
+                                "Verification email sent!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mEmailEditText.getText().toString().equals("") ||
+                        mPasswordEditText.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(),
+                            "Please provide the necessary information",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                mFirebaseAuth.signInWithEmailAndPassword(mEmailEditText.getText().toString(),
+                        mPasswordEditText.getText().toString())
+                        .addOnSuccessListener(LoginActivity.this,
+                                new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        mFirebaseUser = authResult.getUser();
+
+                        if(mFirebaseUser.isEmailVerified()) {
+                            Toast.makeText(getApplicationContext(), "Login Successful",
+                                    Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(LoginActivity.this,
+                                    HomeActivity.class));
+                        } else {
+                            Toast.makeText(getApplicationContext(),
+                                    "Please verify your email and login again.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
