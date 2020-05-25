@@ -61,15 +61,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, dataSnapshot.toString());
-//                UserModel userModel = new UserModel(dataSnapshot.child("displayName").getValue()
-//                        .toString(), dataSnapshot.child("email").getValue().toString(),
-//                        dataSnapshot.child("phone").getValue().toString(),
-//                        localDateFormat.format(new Date(Long.parseLong(dataSnapshot
-//                                .child("timestamp").getValue().toString()))));
-
                 UserModel userModel = new UserModel(dataSnapshot.child("displayName").getValue()
                         .toString(), dataSnapshot.child("email").getValue().toString(),
-                        dataSnapshot.child("phone").getValue().toString());
+                        dataSnapshot.child("phone").getValue().toString(),
+                        localDateFormat.format(new Date(Long.parseLong(dataSnapshot
+                                .child("timestamp").getValue().toString()))));
 
                 usersList.add(userModel);
                 MyRecyclerAdapter.this.notifyItemInserted(usersList.size() - 1);
