@@ -37,14 +37,25 @@ public class MainActivity extends AppCompatActivity {
 
             public void onFinish() {
                 if(mFirebaseUser == null) {
-                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                    Toast.makeText(getApplicationContext(),
+                            "No user found",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this,
+                            LoginActivity.class));
                     finish();
                 }
                  else {
-                    Toast.makeText(getApplicationContext(),
-                            "Please verify your email and login.", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                    finish();
+
+                     if(mFirebaseUser.isEmailVerified()) {
+                         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                         finish();
+                     }
+                     else {
+                         Toast.makeText(getApplicationContext(),
+                                 "Please verify your email and login",
+                                 Toast.LENGTH_SHORT).show();
+                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                         finish();
+                     }
                 }
             }
         }.start();
