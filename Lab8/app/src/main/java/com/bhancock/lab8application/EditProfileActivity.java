@@ -75,7 +75,18 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        return false;
+        switch (item.getItemId()) {
+            case R.id.takephoto:
+                checkPermissions();
+                return true;
+            case R.id.upload:
+                Intent intent = new Intent().setType("*/").setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select a file"), OPEN_FILE);
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -121,6 +132,26 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
                             REQUEST_FOR_CAMERA);
         } else {
             takePhoto();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && requestCode == REQUEST_FOR_CAMERA) {
+            if(ContextCompat.checkSelfPermission(getBaseContext(),
+                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                            || ContextCompat.checkSelfPermission(getBaseContext(),
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                    == PackageManager.PERMISSION_GRANTED) {
+
+                takePhoto();
+            } else {
+                Toast.makeText(this,
+                        "We need to access your camera and photos to upload",
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
