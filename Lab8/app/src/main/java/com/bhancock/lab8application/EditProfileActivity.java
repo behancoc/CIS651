@@ -1,6 +1,7 @@
 package com.bhancock.lab8application;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -20,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +30,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.util.UUID;
 
 public class EditProfileActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -153,5 +161,72 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void uploadImage() {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        final String fileNameInStorage = UUID.randomUUID().toString();
+        String path = "images/" + fileNameInStorage + ".jpg";
+        final StorageReference imageReference = firebaseStorage.getReference(path);
+        imageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(final Uri uri) {
+                        usersRef.child("profilePicture").setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Picasso.get().load(uri.toString()).transform(new CircleTransform()).into(profileImage);
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EditProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EditProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_FOR_CAMERA && resultCode == RESULT_OK) {
+            if(imageUri==null)
+            {
+                Toast.makeText(this, "Error taking photo.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            uploadImage();
+            return;
+        }
+        if(requestCode==OPEN_FILE && resultCode==RESULT_OK) {
+            imageUri = data.getData();
+            uploadImage();
+        }
+    }
+
+    public void Save(View view) {
+        if(displayName.getText().toString().equals("") ||
+                phoneNumber.getText().toString().equals(""))
+        {
+            Toast.makeText(this, "Please enter your display name and phone number",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        usersRef.child("phone").setValue(phoneNumber.getText().toString());
+        usersRef.child("displayname").setValue(displayName.getText().toString());
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
