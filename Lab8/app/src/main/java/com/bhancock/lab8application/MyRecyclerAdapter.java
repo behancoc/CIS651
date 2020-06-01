@@ -49,11 +49,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             this.postKey = key;
 
         }
-
-        public UserModel(String author, String description, String url, String timestamp) {
-
-        }
-
     }
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -81,7 +76,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                         .toString(), dataSnapshot.child("description").getValue().toString(),
                         dataSnapshot.child("url").getValue().toString(),
                         localDateFormat.format(new Date(Long.parseLong(dataSnapshot
-                                .child("timestamp").getValue().toString()))));
+                                .child("timestamp").getValue().toString()))), dataSnapshot.getKey());
 
                 usersList.add(userModel);
                 MyRecyclerAdapter.this.notifyItemInserted(usersList.size() - 1);
@@ -183,7 +178,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 holder.firstNameView.setText("First Name: "
-                        + dataSnapshot.child("displayname").getValue().toString());
+                        + dataSnapshot.child("displayName").getValue().toString());
 
                 holder.emailView.setText("Email: " +
                         dataSnapshot.child("email").getValue().toString());

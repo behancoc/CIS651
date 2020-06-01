@@ -8,8 +8,11 @@
     tools:context=".PhotoPreviewActivity">
 
     <ImageView
+        android:paddingTop="20dp"
         android:id="@+id/preview_image"
-        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
