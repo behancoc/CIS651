@@ -55,6 +55,7 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        profileImage = findViewById(R.id.profile_image);
         phoneNumber = findViewById(R.id.phone_number_text);
         displayName =findViewById(R.id.display_name_text);
         mAuth = FirebaseAuth.getInstance();
@@ -66,7 +67,7 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 phoneNumber.setText(dataSnapshot.child("phone").getValue().toString());
-                displayName.setText(dataSnapshot.child("displayname").getValue().toString());
+                displayName.setText(dataSnapshot.child("displayName").getValue().toString());
 
                 if(dataSnapshot.child("profilePicture").exists()) {
                     Picasso.get().load(dataSnapshot.child("profilePicture").getValue().toString())
