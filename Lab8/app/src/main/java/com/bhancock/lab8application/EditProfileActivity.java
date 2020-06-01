@@ -48,7 +48,7 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private DatabaseReference usersRef;
-    private Uri imageUri;
+    private Uri imageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

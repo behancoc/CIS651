@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +29,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private static final int REQUEST_FOR_CAMERA=0011;
     private static final int OPEN_FILE=0012;
-    private Uri imageUri=null;
+    private Uri imageUri = null;
+    MyRecyclerAdapter myRecyclerAdapter = null;
 
 
     @Override
@@ -43,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         linearLayoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(linearLayoutManager);
-        MyRecyclerAdapter myRecyclerAdapter = new MyRecyclerAdapter(recyclerView);
+        myRecyclerAdapter = new MyRecyclerAdapter(recyclerView);
         recyclerView.setAdapter(myRecyclerAdapter);
     }
 
@@ -83,13 +86,28 @@ public class HomeActivity extends AppCompatActivity {
                             android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_FOR_CAMERA);
         } else {
-            //takePhoto();
+            takePhoto();
         }
     }
 
     public void uploadNewPhoto(View view) {
         checkPermissions();
     }
+
+    public void takePhoto() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        Intent chooser=Intent.createChooser(intent,"Select a Camera App.");
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(chooser, REQUEST_FOR_CAMERA);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -105,5 +123,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
             return;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRecyclerAdapter.removeListener();
     }
 }
