@@ -1,16 +1,16 @@
-package com.bhancock.finalprojectapplication.ui.dashboard;
+package com.bhancock.finalprojectapplication.ui.explore;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class DashboardViewModel extends ViewModel {
+public class ExploreViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public DashboardViewModel() {
+    public ExploreViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        mText.setValue("This is the explore fragment");
     }
 
     public LiveData<String> getText() {
