@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bhancock.finalprojectapplication.R;
-import com.bhancock.finalprojectapplication.ui.favorites.FavoritesViewModel;
 
 public class ProfileFragment extends Fragment {
 

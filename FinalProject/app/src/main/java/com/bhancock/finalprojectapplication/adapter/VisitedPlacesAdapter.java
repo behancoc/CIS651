@@ -21,12 +21,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VisitedPlacesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private List<VisitedPlaces> mPlaceVisited = new ArrayList<>();
+    private List<VisitedPlaces> mVisitedPlaces = new ArrayList<>();
 
 
-    public VisitedPlacesAdapter(Context context, List<VisitedPlaces> placeVisiteds) {
+    public VisitedPlacesAdapter(Context context, List<VisitedPlaces> visitedPlaces) {
         mContext = context;
-        mPlaceVisited = placeVisiteds;
+        mVisitedPlaces = visitedPlaces;
     }
 
 
@@ -41,20 +41,20 @@ public class VisitedPlacesAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         // Set the name of the 'NicePlace'
-        ((ViewHolder)holder).mName.setText(mPlaceVisited.get(position).getTitle());
+        ((ViewHolder)holder).mName.setText(mVisitedPlaces.get(position).getTitle());
 
         // Set the image
         RequestOptions defaultOptions = new RequestOptions()
                 .error(R.drawable.ic_launcher_background);
         Glide.with(mContext)
                 .setDefaultRequestOptions(defaultOptions)
-                .load(mPlaceVisited.get(position).getImageUrl())
+                .load(mVisitedPlaces.get(position).getImageUrl())
                 .into(((ViewHolder)holder).mImage);
     }
 
     @Override
     public int getItemCount() {
-        return mPlaceVisited.size();
+        return mVisitedPlaces.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
