@@ -16,4 +16,6 @@ public class ExploreViewModel extends ViewModel {
     public LiveData<String> getText() {
         return mText;
     }
+
+
 }
