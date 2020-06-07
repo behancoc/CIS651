@@ -1,10 +1,13 @@
 package com.bhancock.finalprojectapplication.model;
 
-public class UserPlaces {
+public class VisitedPlaces {
+
+    private static final String TAG = VisitedPlaces.class.getSimpleName();
+
     private String title;
     private String imageUrl;
 
-    public UserPlaces(String title, String  imageUrl) {
+    public VisitedPlaces(String imageUrl, String title) {
         this.title = title;
         this.imageUrl = imageUrl;
     }
