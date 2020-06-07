@@ -1,4 +1,4 @@
-package com.bhancock.finalprojectapplication.ui.feed;
+package com.bhancock.finalprojectapplication.ui.favorites;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.bhancock.finalprojectapplication.R;
 
-public class FeedFragment extends Fragment {
+public class FavoritesFragment extends Fragment {
 
-    private FeedViewModel feedViewModel;
+    private FavoritesViewModel favoritesViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        feedViewModel =
-                ViewModelProviders.of(this).get(FeedViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_feed, container, false);
+        favoritesViewModel =
+                ViewModelProviders.of(this).get(FavoritesViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_favorites, container, false);
         final TextView textView = root.findViewById(R.id.text_favorites);
-        feedViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        favoritesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

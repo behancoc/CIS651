@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Final Project Application</string>
-    <string name="title_home">Home</string>
+    <string name="title_home">Feed</string>
     <string name="title_navigation">Explore</string>
     <string name="title_search">Search</string>
     <string name="title_favorites">Favorites</string>

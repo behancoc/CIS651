@@ -1,14 +1,14 @@
-package com.bhancock.finalprojectapplication.ui.feed;
+package com.bhancock.finalprojectapplication.ui.favorites;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class FeedViewModel extends ViewModel {
+public class FavoritesViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public FeedViewModel() {
+    public FavoritesViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is the favorites fragment");
     }
