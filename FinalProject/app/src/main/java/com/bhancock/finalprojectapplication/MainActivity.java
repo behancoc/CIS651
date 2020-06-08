@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //bypassUserLogin();
-        testUserLogin();
+        bypassUserLogin();
+        //testUserLogin();
     }
 
     public void bypassUserLogin() {
