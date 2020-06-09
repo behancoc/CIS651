@@ -17,5 +17,4 @@ public class ExploreViewModel extends ViewModel {
         return mText;
     }
 
-
 }

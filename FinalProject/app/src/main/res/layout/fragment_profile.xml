@@ -62,6 +62,18 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
+        <Button
+            android:id="@+id/edit_profile"
+            android:text="Edit Profile"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </Button>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_trips_recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
