@@ -1,6 +1,7 @@
 package com.bhancock.finalprojectapplication.ui.home;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bhancock.finalprojectapplication.R;
+import com.bhancock.finalprojectapplication.adapter.HomeFeedListAdapter;
 import com.bhancock.finalprojectapplication.adapter.VisitedPlacesAdapter;
+import com.bhancock.finalprojectapplication.model.HomeFeedItem;
+import com.bhancock.finalprojectapplication.model.Video;
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -28,17 +33,24 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private RecyclerView mRecyclerView;
-    private VisitedPlacesAdapter mAdapter;
+    private HomeFeedListAdapter mAdapter;
     private ProgressBar mProgressBar;
     private Context mContext;
 
     private void initRecyclerView() {
         mContext = getActivity().getApplicationContext();
-        mAdapter = new VisitedPlacesAdapter(getContext(), homeViewModel.getUserPlaces().getValue());
+//        mAdapter = new HomeFeedListAdapter(getContext(), homeViewModel.getHomeFeedItems().getValue());
+        mAdapter = new HomeFeedListAdapter(getContext(), homeViewModel.getVideoList().getValue());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setBackgroundColor(Color.BLACK);
         mRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -46,6 +58,7 @@ public class HomeFragment extends Fragment {
 
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         homeViewModel.init();
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         mRecyclerView = root.findViewById(R.id.recycler_view);
         mProgressBar = root.findViewById(R.id.progress_bar);
@@ -53,22 +66,20 @@ public class HomeFragment extends Fragment {
 
         initRecyclerView();
 
-        homeViewModel.getUserPlaces().observe(getViewLifecycleOwner(), new Observer<List<VisitedPlaces>>() {
+        homeViewModel.getVideoList().observe(getViewLifecycleOwner(), new Observer<List<Video>>() {
             @Override
-            public void onChanged(List<VisitedPlaces> visitedPlaces) {
+            public void onChanged(List<Video> videoList) {
                 mAdapter.notifyDataSetChanged();
             }
         });
 
 
+//        homeViewModel.getHomeFeedItems().observe(getViewLifecycleOwner(), new Observer<ArrayList<HomeFeedItem>>() {
+//            @Override
+//            public void onChanged(ArrayList<HomeFeedItem> homeFeedItems) {
+//                mAdapter.notifyDataSetChanged();
+//            }
+//        });
         return root;
-    }
-
-    private void showProgressBar() {
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideProgressBar() {
-        mProgressBar.setVisibility(View.GONE);
     }
 }

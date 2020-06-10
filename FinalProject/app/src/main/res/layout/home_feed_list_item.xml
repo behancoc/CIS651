@@ -23,21 +23,17 @@
         android:layout_height="wrap_content"
         android:weightSum="3">
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/user_visited_map_view"
+        <ImageView
+            android:id="@+id/home_feed_image_view"
+            android:src="@mipmap/ic_launcher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/location_name"
+            android:id="@+id/home_feed_video_title"
+            android:text="Video Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/date_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
 
 
         <View
@@ -51,12 +47,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-<!--            <ImageView-->
-<!--                android:src="@drawable/like_disabled"-->
-<!--                android:id="@+id/like_btn"-->
-<!--                android:layout_width="15dp"-->
-<!--                android:layout_height="15dp"/>-->
 
             <TextView
                 android:id="@+id/like_count"

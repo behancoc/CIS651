@@ -1,18 +1,23 @@
 package com.bhancock.finalprojectapplication.ui.profile;
 
+import android.media.Image;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bhancock.finalprojectapplication.model.UserPreviousLocation;
+import com.bhancock.finalprojectapplication.model.VisitedPlaces;
+import com.bhancock.finalprojectapplication.repository.ProfileGridRepository;
+import com.bhancock.finalprojectapplication.repository.VisitedPlacesRepository;
 
 import java.util.List;
 
 public class ProfileViewModel extends ViewModel {
 
     private MutableLiveData<List<UserPreviousLocation>>  mAvailableMapViews;
-
-
+    private MutableLiveData<List<VisitedPlaces>> mUserPlaces;
+    private ProfileGridRepository mRepository;
     private MutableLiveData<String> mText;
 
     public ProfileViewModel() {
@@ -20,11 +25,20 @@ public class ProfileViewModel extends ViewModel {
         mText.setValue("This is the profile fragment");
     }
 
+    public void init() {
+        if (mUserPlaces != null) {
+            //I've already retrieved the data
+            return;
+        }
+        mRepository = ProfileGridRepository.getInstance();
+        mUserPlaces = mRepository.getUserPlaces();
+    }
+
     public LiveData<String> getText() {
         return mText;
     }
 
-    public LiveData<List<UserPreviousLocation>> getAvailableMapViews() {
-        return mAvailableMapViews;
+    public LiveData<List<VisitedPlaces>> getUserPlaces() {
+        return mUserPlaces;
     }
 }

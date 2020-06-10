@@ -6,17 +6,27 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bhancock.finalprojectapplication.model.HomeFeedItem;
+import com.bhancock.finalprojectapplication.model.Video;
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
+import com.bhancock.finalprojectapplication.repository.VideoRepository;
 import com.bhancock.finalprojectapplication.repository.VisitedPlacesRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
+    private static final String TAG = HomeViewModel.class.getSimpleName();
+
     private MutableLiveData<String> mText;
     private MutableLiveData<ProgressBar> mProgressBar;
     private MutableLiveData<List<VisitedPlaces>> mUserPlaces;
+    private MutableLiveData<List<Video>> mVideoList;
+    private MutableLiveData<List<Video>> mHomeFeedList;
     private VisitedPlacesRepository mRepository;
+    private VideoRepository mVideoRepository;
+
 
 
     public HomeViewModel() {
@@ -25,19 +35,22 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void init() {
-        if (mUserPlaces != null) {
+        if (mVideoList != null) {
             //I've already retrieved the data
             return;
         }
-        mRepository = VisitedPlacesRepository.getInstance();
-        mUserPlaces = mRepository.getUserPlaces();
+        mVideoRepository = VideoRepository.getInstance();
+       //mHomeFeedList = mVideoRepository.getVideoObjects();
+        mVideoList = mVideoRepository.getVideoObjects();
+
     }
 
     public LiveData<String> getText() {
         return mText;
     }
 
-    public LiveData<List<VisitedPlaces>> getUserPlaces() {
-        return mUserPlaces;
+
+    public LiveData<List<Video>> getVideoList() {
+        return mVideoList;
     }
 }

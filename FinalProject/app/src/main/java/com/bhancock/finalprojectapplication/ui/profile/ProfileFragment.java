@@ -4,26 +4,32 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bhancock.finalprojectapplication.R;
-import com.bhancock.finalprojectapplication.adapter.UserPreviousLocationsAdapter;
+import com.bhancock.finalprojectapplication.adapter.ProfileGridAdapter;
+import com.bhancock.finalprojectapplication.adapter.VisitedPlacesAdapter;
+import com.bhancock.finalprojectapplication.model.VisitedPlaces;
+
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
     private ProfileViewModel profileViewModel;
-    private RecyclerView mUserSavdTripJourneys;
-    private UserPreviousLocationsAdapter mAdapter;
+    private RecyclerView mProfileGridRecyclerView;
+    private ProfileGridAdapter mAdapter;
     private Context mContext;
 
     public static ProfileFragment newInstance() {
@@ -32,7 +38,10 @@ public class ProfileFragment extends Fragment {
 
     private void initRecyclerView() {
         mContext = getActivity().getApplicationContext();
-        mAdapter = new UserPreviousLocationsAdapter(getContext(), profileViewModel.getAvailableMapViews().getValue());
+        mAdapter = new ProfileGridAdapter(getContext(), profileViewModel.getUserPlaces().getValue());
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 3);
+        mProfileGridRecyclerView.setLayoutManager(layoutManager);
+        mProfileGridRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -40,22 +49,19 @@ public class ProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         profileViewModel =
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
+        profileViewModel.init();
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
-        final TextView textView = root.findViewById(R.id.text_profile);
-        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        mProfileGridRecyclerView = root.findViewById(R.id.profile_grid_recycler_view);
+
+        initRecyclerView();
+
+        profileViewModel.getUserPlaces().observe(getViewLifecycleOwner(), new Observer<List<VisitedPlaces>>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onChanged(List<VisitedPlaces> visitedPlaces) {
+                mAdapter.notifyDataSetChanged();
             }
         });
+
         return root;
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
 }
