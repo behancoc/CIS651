@@ -78,8 +78,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
         Log.d(TAG, "onCreate() called....");
 
-        createLocationRequest();
-
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -97,9 +95,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         };
-
-        //startLocationUpdates();
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -114,7 +109,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 getChildFragmentManager().findFragmentById(R.id.map);
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-
         mapFragment.getMapAsync(this);
 
 
@@ -125,7 +119,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public void onStart() {
         Log.d(TAG, "onStart");
         super.onStart();
-        //startLocationUpdates();
+
 
     }
 
@@ -147,10 +141,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         mMap.setBuildingsEnabled(true);
-
-
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
@@ -215,13 +206,4 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         });
 
     }
-    private static LocationRequest createLocationRequest() {
-        Log.d(TAG, "createLocationRequest");
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1);
-        mLocationRequest.setFastestInterval(1);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return mLocationRequest;
-    }
-
 }

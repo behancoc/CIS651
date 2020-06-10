@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -26,20 +27,28 @@ public class LocationService extends Service {
 
     private static final String TAG = LocationService.class.getSimpleName();
 
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
+    FusedLocationProviderClient mFusedLocationProviderClient;
+    LocationCallback mLocationCallback;
 
-            if (locationResult != null && locationResult.getLastLocation() != null) {
-                double latitude = locationResult.getLastLocation().getLatitude();
-                double longitude = locationResult.getLastLocation().getLongitude();
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-                Log.d(TAG, "Latitude is: " + latitude);
-                Log.d(TAG, "Longitude is: " + longitude);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+
+                Log.d(TAG, "Service Latitude is: " + locationResult.getLastLocation().getLatitude());
+                Log.d(TAG, "Service Longitude is: " + locationResult.getLastLocation().getLongitude());
             }
-        }
-    };
+        };
+    }
+
+    private void requestLocation() {
+
+    }
 
     @Nullable
     @Override
@@ -66,11 +75,14 @@ public class LocationService extends Service {
 
     private void startLocationService() {
         String channelId = "location_notification_channel";
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent();
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),
+                channelId);
 
 
         builder.setSmallIcon(R.mipmap.ic_launcher);
@@ -91,20 +103,26 @@ public class LocationService extends Service {
         }
 
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(200);
-        locationRequest.setFastestInterval(100);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
+        locationRequest.setInterval(2000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
-            //TODO:Request location permissions
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        LocationServices.getFusedLocationProviderClient(getApplicationContext())
-                .requestLocationUpdates(locationRequest, mLocationCallback, Looper.getMainLooper());
+        LocationServices.getFusedLocationProviderClient(this).
+                requestLocationUpdates(locationRequest, mLocationCallback, Looper.getMainLooper());
+        startForeground(Constants.LOCATION_SERVICE_ID, builder.build());
+
 
         startForeground(Constants.LOCATION_SERVICE_ID, builder.build());
     }
