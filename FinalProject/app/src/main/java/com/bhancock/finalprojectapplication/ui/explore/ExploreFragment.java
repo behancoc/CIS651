@@ -2,14 +2,9 @@ package com.bhancock.finalprojectapplication.ui.explore;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +19,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bhancock.finalprojectapplication.Constants;
-import com.bhancock.finalprojectapplication.LocationService;
 import com.bhancock.finalprojectapplication.PermissionUtils;
 import com.bhancock.finalprojectapplication.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -39,7 +32,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class ExploreFragment extends Fragment implements OnMapReadyCallback,
@@ -145,7 +137,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
-        startLocationUpdates();
+        updateCameraToLastKnownPosition();
     }
 
 
@@ -190,7 +182,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
 
     @SuppressLint("MissingPermission")
-    private void startLocationUpdates() {
+    private void updateCameraToLastKnownPosition() {
 
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
@@ -205,5 +197,17 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onViewStateRestored called");
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView called");
+        super.onDestroyView();
     }
 }

@@ -50,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onStart();
         Log.d(TAG, "onStart()");
 
+
         startLocationService();
     }
 
@@ -106,5 +107,4 @@ public class HomeActivity extends AppCompatActivity {
 
         }
     }
-
 }
