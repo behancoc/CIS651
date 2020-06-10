@@ -55,24 +55,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
         Log.d(TAG, "onCreate() called....");
 
-        mLocationRequest = new LocationRequest();
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    //Update UI with location data
-                     latitude = location.getLatitude();
-                     longitude = location.getLongitude();
-
-                    Log.d(TAG, "Latitude: " + latitude);
-                    Log.d(TAG, "Longitude: " + longitude);
-                }
-            }
-        };
-        //Do permissions check here
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -107,10 +89,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
-        LatLng currentLocation = new LatLng(latitude, longitude);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+        //LatLng currentLocation = new LatLng(latitude, longitude);
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
 
 
 

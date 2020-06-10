@@ -49,7 +49,30 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Log.d(TAG, "onStart()");
         requestLocationPermission();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d(TAG, "onResume()");
+        stopLocationService();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop()");
+        stopLocationService();
     }
 
     private void requestLocationPermission() {
@@ -148,6 +171,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void startLocationService() {
         if(!isLocationServiceCurrentlyActive()) {
+            Log.d(TAG, "Is service active?: " + isLocationServiceCurrentlyActive());
             Intent intent = new Intent(getApplicationContext(), LocationService.class);
             intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
             startService(intent);
@@ -164,4 +188,5 @@ public class HomeActivity extends AppCompatActivity {
 
         }
     }
+
 }
