@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -17,12 +18,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bhancock.finalprojectapplication.Constants;
 import com.bhancock.finalprojectapplication.LocationService;
+import com.bhancock.finalprojectapplication.PermissionUtils;
 import com.bhancock.finalprojectapplication.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -33,21 +37,52 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
-public class ExploreFragment extends Fragment implements OnMapReadyCallback {
+public class ExploreFragment extends Fragment implements OnMapReadyCallback,
+        GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnMyLocationClickListener,
+        ActivityCompat.OnRequestPermissionsResultCallback {
+
+    /**
+     * Request code for location permission request.
+     *
+     * @see #onRequestPermissionsResult(int, String[], int[])
+     */
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+    /**
+     * Flag indicating whether a requested permission has been denied after returning in
+     * {@link #onRequestPermissionsResult(int, String[], int[])}.
+     */
+    private boolean mPermissionDenied = false;
+
+    private LocationCallback mLocationCallback;
+    private LocationRequest mLocationRequest;
 
     private static final String TAG = ExploreFragment.class.getSimpleName();
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private LocationCallback mLocationCallback;
-    private LocationRequest mLocationRequest;
 
     public static final int REQUEST_CODE_PERMISSIONS = 101;
     private ExploreViewModel exploreViewModel;
     private GoogleMap mMap;
     double latitude;
     double longitude;
+
+    private PolylineOptions currPolylineOptions;
+    private boolean isCanceled = false;
+
+
+    public static final CameraPosition BONDI =
+            new CameraPosition.Builder().target(new LatLng(-33.891614, 151.276417))
+                    .zoom(15.5f)
+                    .bearing(300)
+                    .tilt(50)
+                    .build();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,13 +95,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        Log.d(TAG, "OnCreateView");
+
         exploreViewModel = new ViewModelProvider(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.fragment_explore, container, false);
 
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
 
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
 
         mapFragment.getMapAsync(this);
 
@@ -75,32 +112,97 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
+    public void onStart() {
+        Log.d(TAG, "onStart");
+        super.onStart();
+        startLocationUpdates();
+
+    }
+
+    @Override
     public void onResume() {
+        Log.d(TAG, "onResume");
         super.onResume();
+        startLocationUpdates();
     }
 
     @Override
     public void onStop() {
+        Log.d(TAG, "onStop");
         super.onStop();
     }
 
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //LatLng sydney = new LatLng(-34, 151);
-        //LatLng currentLocation = new LatLng(latitude, longitude);
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+        mMap.setBuildingsEnabled(true);
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location!=null) {
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .zoom(18).bearing(0).tilt(70).build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+            }
+        });
+
+        mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMyLocationClickListener(this);
+        enableMyLocation();
+    }
 
 
 
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    private void enableMyLocation() {
+        Log.d(TAG, "You are here!!");
+
+        // [START maps_check_location_permission]
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            Log.d(TAG, "You are now here!!");
+            if (mMap != null) {
+
+                Log.d(TAG, "You are now in here!!");
+                mMap.setMyLocationEnabled(true);
+
+            }
+        } else {
+            // Permission to access the location is missing. Show rationale and request permission
+            PermissionUtils.requestPermission((AppCompatActivity) getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
-        mMap.setMyLocationEnabled(true);
+        // [END maps_check_location_permission]
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-33.87365, 151.20689), 10));
+
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+
     }
 }
