@@ -70,25 +70,35 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public static final int REQUEST_CODE_PERMISSIONS = 101;
     private ExploreViewModel exploreViewModel;
     private GoogleMap mMap;
-    double latitude;
-    double longitude;
 
-    private PolylineOptions currPolylineOptions;
-    private boolean isCanceled = false;
-
-
-    public static final CameraPosition BONDI =
-            new CameraPosition.Builder().target(new LatLng(-33.891614, 151.276417))
-                    .zoom(15.5f)
-                    .bearing(300)
-                    .tilt(50)
-                    .build();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, "onCreate() called....");
+
+        createLocationRequest();
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Log.d(TAG, "LocationCallback");
+                if (locationResult == null) {
+                    Toast.makeText(getContext(), "Check Location Permissions", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    Log.d(TAG, "start location method call: Latitude: " + location.getLatitude());
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .zoom(18).bearing(0).tilt(70).build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+            }
+        };
+
+        //startLocationUpdates();
 
     }
 
@@ -103,7 +113,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
 
-
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
         mapFragment.getMapAsync(this);
 
@@ -115,7 +125,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public void onStart() {
         Log.d(TAG, "onStart");
         super.onStart();
-        startLocationUpdates();
+        //startLocationUpdates();
 
     }
 
@@ -123,7 +133,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
-        startLocationUpdates();
+
     }
 
     @Override
@@ -140,26 +150,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
         mMap.setBuildingsEnabled(true);
 
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location!=null) {
-
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                            .zoom(18).bearing(0).tilt(70).build();
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                }
-            }
-        });
 
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
+        startLocationUpdates();
     }
-
-
 
 
     /**
@@ -201,8 +197,31 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
+
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
 
+        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .zoom(18).bearing(0).tilt(70).build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+            }
+        });
+
     }
+    private static LocationRequest createLocationRequest() {
+        Log.d(TAG, "createLocationRequest");
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1);
+        mLocationRequest.setFastestInterval(1);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return mLocationRequest;
+    }
+
 }
