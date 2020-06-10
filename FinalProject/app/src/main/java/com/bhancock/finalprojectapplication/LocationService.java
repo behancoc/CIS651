@@ -42,13 +42,15 @@ public class LocationService extends Service {
 
                 Log.d(TAG, "Service Latitude is: " + locationResult.getLastLocation().getLatitude());
                 Log.d(TAG, "Service Longitude is: " + locationResult.getLastLocation().getLongitude());
+
+                Intent locationDataIntent = new Intent("ACTION_LOCATION_DATA");
+                locationDataIntent.putExtra("latitude", locationResult.getLastLocation().getLatitude());
+                locationDataIntent.putExtra("longitude", locationResult.getLastLocation().getLatitude());
+                sendBroadcast(locationDataIntent);
             }
         };
     }
 
-    private void requestLocation() {
-
-    }
 
     @Nullable
     @Override

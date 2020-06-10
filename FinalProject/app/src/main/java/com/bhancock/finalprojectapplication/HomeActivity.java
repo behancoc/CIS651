@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityManagerCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -14,9 +15,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bhancock.finalprojectapplication.ui.favorites.FavoritesFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -26,6 +29,8 @@ public class HomeActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_PERMISSIONS = 101;
     private FusedLocationProviderClient mFusedLocationClient;
     protected Location mLastLocation;
+
+    Fragment mMyFragment;
 
 
     @Override
@@ -43,6 +48,12 @@ public class HomeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        if(savedInstanceState != null) {
+            //Restore the fragment's instance
+            mMyFragment = getSupportFragmentManager().getFragment(savedInstanceState, "myFragmentName");
+
+        }
     }
 
     @Override
@@ -106,5 +117,13 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Stopping Location Service", Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+
+        getSupportFragmentManager().putFragment(outState, "myFragmentName", mMyFragment);
     }
 }

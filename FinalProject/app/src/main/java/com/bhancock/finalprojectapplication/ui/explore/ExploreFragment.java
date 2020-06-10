@@ -2,6 +2,10 @@ package com.bhancock.finalprojectapplication.ui.explore;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -69,6 +73,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, "onCreate() called....");
+
+        LocationBroadCastReceiver locationBroadCastReceiver = new LocationBroadCastReceiver();
+        IntentFilter intentFilter = new IntentFilter("ACTION_LOCATION_DATA");
+
+        getActivity().registerReceiver(locationBroadCastReceiver, intentFilter);
 
         mLocationCallback = new LocationCallback() {
             @Override
@@ -209,5 +218,19 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView called");
         super.onDestroyView();
+    }
+
+    public class LocationBroadCastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("ACTION_LOCATION_DATA")) {
+                double latitude = intent.getDoubleExtra("latitude", 0f);
+                double longitude = intent.getDoubleExtra("longitude", 0f);
+
+                Toast.makeText(getContext(), "broadcast receiver receiving latitude of : "
+                        + latitude + "\n" + "broadcast receiver receiving longitude of: " + longitude,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
