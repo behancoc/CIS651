@@ -34,9 +34,19 @@ public class FavoritesFragment extends Fragment {
         mContext = getActivity().getApplicationContext();
         mAdapter = new VisitedPlacesAdapter(getContext(), favoritesViewModel.getUserPlaces().getValue());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
+        layoutManager.onSaveInstanceState();
         mFavoritesRecyclerView.setLayoutManager(layoutManager);
         mFavoritesRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if(savedInstanceState != null) {
+
+        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -49,28 +59,21 @@ public class FavoritesFragment extends Fragment {
         mProgressBar = root.findViewById(R.id.progress_bar);
 
 
-        initRecyclerView();
+
 
         favoritesViewModel.getUserPlaces().observe(getViewLifecycleOwner(), new Observer<List<VisitedPlaces>>() {
             @Override
-            public void onChanged(List<VisitedPlaces> placeVisiteds) {
+            public void onChanged(List<VisitedPlaces> visitedPlaces) {
                 mAdapter.notifyDataSetChanged();
             }
         });
-
+        initRecyclerView();
 
         return root;
     }
 
-
-
-    private void showProgressBar() {
-        mProgressBar.setVisibility(View.VISIBLE);
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
-
-    private void hideProgressBar() {
-        mProgressBar.setVisibility(View.GONE);
-    }
-
-
 }
