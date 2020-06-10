@@ -45,7 +45,7 @@ public class LocationService extends Service {
 
                 Intent locationDataIntent = new Intent("ACTION_LOCATION_DATA");
                 locationDataIntent.putExtra("latitude", locationResult.getLastLocation().getLatitude());
-                locationDataIntent.putExtra("longitude", locationResult.getLastLocation().getLatitude());
+                locationDataIntent.putExtra("longitude", locationResult.getLastLocation().getLongitude());
                 sendBroadcast(locationDataIntent);
             }
         };
