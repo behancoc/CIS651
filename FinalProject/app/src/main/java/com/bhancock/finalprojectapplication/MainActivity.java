@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.Toast;
 
-import com.bhancock.finalprojectapplication.ui.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        bypassUserLogin();
-        //testUserLogin();
+        //bypassUserLogin();
+        testUserLogin();
     }
 
     public void bypassUserLogin() {

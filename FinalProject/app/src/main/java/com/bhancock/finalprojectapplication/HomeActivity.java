@@ -11,7 +11,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,6 +31,8 @@ public class HomeActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_PERMISSIONS = 101;
     private FusedLocationProviderClient mFusedLocationClient;
     protected Location mLastLocation;
+
+    private boolean mLocationPermissionGranted = false;
 
     Fragment mMyFragment;
 
@@ -119,11 +123,18 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
+//    private void buildAlertMessageNoGps() {
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
+//                .setCancelable(false)
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+//                        Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                        startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
+//                    }
+//                });
+//        final AlertDialog alert = builder.create();
+//        alert.show();
+//    }
 
-
-        getSupportFragmentManager().putFragment(outState, "myFragmentName", mMyFragment);
-    }
 }

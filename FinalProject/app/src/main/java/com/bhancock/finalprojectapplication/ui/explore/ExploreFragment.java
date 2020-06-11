@@ -25,6 +25,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bhancock.finalprojectapplication.PermissionUtils;
 import com.bhancock.finalprojectapplication.R;
+import com.bhancock.finalprojectapplication.model.User;
+import com.bhancock.finalprojectapplication.model.UserLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -36,7 +38,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -66,6 +75,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public static final int REQUEST_CODE_PERMISSIONS = 101;
     private ExploreViewModel exploreViewModel;
     private GoogleMap mMap;
+    private double latitude;
+    private double longitude;
+    private UserLocation mUserLocation;
+    private FirebaseFirestore firebaseFirestore;
+
 
 
     @Override
@@ -73,6 +87,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, "onCreate() called....");
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+
 
         LocationBroadCastReceiver locationBroadCastReceiver = new LocationBroadCastReceiver();
         IntentFilter intentFilter = new IntentFilter("ACTION_LOCATION_DATA");
@@ -94,6 +112,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                             .zoom(18).bearing(0).tilt(70).build();
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
+
+                getUserInformation();
             }
         };
     }
@@ -121,14 +141,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Log.d(TAG, "onStart");
         super.onStart();
 
-
     }
 
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
-
     }
 
     @Override
@@ -224,13 +242,80 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals("ACTION_LOCATION_DATA")) {
-                double latitude = intent.getDoubleExtra("latitude", 0f);
-                double longitude = intent.getDoubleExtra("longitude", 0f);
+                latitude = intent.getDoubleExtra("latitude", 0f);
+                longitude = intent.getDoubleExtra("longitude", 0f);
 
-                Toast.makeText(getContext(), "broadcast receiver receiving latitude of : "
-                        + latitude + "\n" + "broadcast receiver receiving longitude of: " + longitude,
-                        Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "BroadcastReceiver latitude: " + latitude);
+                Log.d(TAG, "BroadcastReceiver longitude: " + longitude);
+
             }
+        }
+    }
+
+    private void storeUserLocation() {
+        if(mUserLocation != null) {
+            DocumentReference documentReference = firebaseFirestore
+                    .collection("User Locations")
+                    .document(FirebaseAuth.getInstance().getUid());
+
+            documentReference.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()) {
+                        Log.d(TAG, "storeUserLocation: \n " +
+                                "inserted user location into the database." +
+                                "\n latitude: " + mUserLocation.getGeoPoint().getLatitude() +
+                                "\n longitude: " + mUserLocation.getGeoPoint().getLongitude());
+                    }
+                }
+            }); //TODO: Place onFailureListener!
+        }
+    }
+
+    private void getLastKnownLocation() {
+        Log.d(TAG, "getLastKnownLocation: called. ");
+        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED) {
+            return; //TODO: raise dialog box
+        }
+        mFusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if(task.isSuccessful()) {
+                    Location location = task.getResult();
+                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    Log.d(TAG, "onComplete: latitude: " + geoPoint.getLatitude());
+                    Log.d(TAG, "onComplete: longitude: " + geoPoint.getLongitude());
+
+                    mUserLocation.setGeoPoint(geoPoint);
+                    mUserLocation.setServerTimestamp(null); //Allow firestore to make it's own timestamp
+                    storeUserLocation();
+                }
+            }
+        });
+    }
+
+    public void getUserInformation() {
+        if(mUserLocation == null) {
+            mUserLocation = new UserLocation();
+
+            DocumentReference userReference = firebaseFirestore
+                    .collection("Users")
+                    .document(FirebaseAuth.getInstance().getUid());
+
+            userReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()) {
+                        Log.d(TAG, "Yeah... got the user information!");
+
+                        User user = task.getResult().toObject(User.class);
+                        mUserLocation.setUser(user);
+                        getLastKnownLocation();
+
+                    }
+                }
+            });
         }
     }
 }
