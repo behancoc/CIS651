@@ -67,4 +67,7 @@ public class VisitedPlacesAdapter extends RecyclerView.Adapter<RecyclerView.View
             mName = view.findViewById(R.id.location_name);
         }
     }
+
+
+
 }

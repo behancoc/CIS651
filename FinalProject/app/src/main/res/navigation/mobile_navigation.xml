@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@id/navigation_explore">
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.bhancock.finalprojectapplication.ui.search.SearchFragment"
-        android:label="@string/title_search"
+        android:name="com.bhancock.finalprojectapplication.ui.camera.CameraFragment"
+        android:label="@string/title_camera"
         tools:layout="@layout/fragment_search" />
 
     <fragment

@@ -24,12 +24,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private FirebaseAuth mFirebaseAuth;
+    private FirebaseFirestore firebaseFirestore;
     private FirebaseUser mFirebaseUser;
 
     private EditText mEmailEditText;
@@ -140,6 +144,9 @@ public class LoginActivity extends AppCompatActivity {
                         LoginActivity.this, new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
+
+
+
                                 mFirebaseUser = authResult.getUser();
                                 mFirebaseUser.sendEmailVerification().addOnSuccessListener(
                                         LoginActivity.this, new OnSuccessListener<Void>() {
@@ -167,6 +174,8 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
             }
         });
 

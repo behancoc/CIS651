@@ -33,11 +33,6 @@ public class HomeFeedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.videoList = videoList;
     }
 
-//    public HomeFeedListAdapter(Context context, HomeFeedItem feedItem) {
-//        mContext = context;
-//        this.homeFeedItem = feedItem;
-//    }
-
 
     @NonNull
     @Override
@@ -56,7 +51,7 @@ public class HomeFeedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemCount() {
         return videoList.size();
-//        return homeFeedItem.getVideos().size();
+//        return homeFeedItem.getVideos().size();   
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

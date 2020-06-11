@@ -2,6 +2,7 @@ package com.bhancock.finalprojectapplication.ui.explore;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bhancock.finalprojectapplication.PermissionUtils;
@@ -79,6 +81,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     private double longitude;
     private UserLocation mUserLocation;
     private FirebaseFirestore firebaseFirestore;
+    private boolean isMapReady;
 
 
 
@@ -112,8 +115,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                             .zoom(18).bearing(0).tilt(70).build();
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
-
-                getUserInformation();
             }
         };
     }
@@ -129,8 +130,16 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
 
+//        exploreViewModel.getCurrentLocation().observe(getViewLifecycleOwner(), new Observer<LatLng>() {
+//            @Override
+//            public void onChanged(LatLng latLng) {
+//                Log.d(TAG, "Observing a new latitude and longitude!");
+//            }
+//        });
+
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         mapFragment.getMapAsync(this);
+        isMapReady = true;
 
 
         return root;
@@ -147,6 +156,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+
     }
 
     @Override
@@ -247,75 +257,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
                 Log.d(TAG, "BroadcastReceiver latitude: " + latitude);
                 Log.d(TAG, "BroadcastReceiver longitude: " + longitude);
-
             }
-        }
-    }
-
-    private void storeUserLocation() {
-        if(mUserLocation != null) {
-            DocumentReference documentReference = firebaseFirestore
-                    .collection("User Locations")
-                    .document(FirebaseAuth.getInstance().getUid());
-
-            documentReference.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()) {
-                        Log.d(TAG, "storeUserLocation: \n " +
-                                "inserted user location into the database." +
-                                "\n latitude: " + mUserLocation.getGeoPoint().getLatitude() +
-                                "\n longitude: " + mUserLocation.getGeoPoint().getLongitude());
-                    }
-                }
-            }); //TODO: Place onFailureListener!
-        }
-    }
-
-    private void getLastKnownLocation() {
-        Log.d(TAG, "getLastKnownLocation: called. ");
-        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-        PackageManager.PERMISSION_GRANTED) {
-            return; //TODO: raise dialog box
-        }
-        mFusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if(task.isSuccessful()) {
-                    Location location = task.getResult();
-                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    Log.d(TAG, "onComplete: latitude: " + geoPoint.getLatitude());
-                    Log.d(TAG, "onComplete: longitude: " + geoPoint.getLongitude());
-
-                    mUserLocation.setGeoPoint(geoPoint);
-                    mUserLocation.setServerTimestamp(null); //Allow firestore to make it's own timestamp
-                    storeUserLocation();
-                }
-            }
-        });
-    }
-
-    public void getUserInformation() {
-        if(mUserLocation == null) {
-            mUserLocation = new UserLocation();
-
-            DocumentReference userReference = firebaseFirestore
-                    .collection("Users")
-                    .document(FirebaseAuth.getInstance().getUid());
-
-            userReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()) {
-                        Log.d(TAG, "Yeah... got the user information!");
-
-                        User user = task.getResult().toObject(User.class);
-                        mUserLocation.setUser(user);
-                        getLastKnownLocation();
-
-                    }
-                }
-            });
         }
     }
 }
