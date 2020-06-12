@@ -9,7 +9,7 @@
         android:id="@+id/navigation_search"
         android:name="com.bhancock.finalprojectapplication.ui.camera.CameraFragment"
         android:label="@string/title_camera"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_camera" />
 
     <fragment
         android:id="@+id/navigation_explore"

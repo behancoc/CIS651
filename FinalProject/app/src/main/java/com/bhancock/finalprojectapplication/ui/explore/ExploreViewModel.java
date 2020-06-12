@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
-import com.bhancock.finalprojectapplication.repository.CurrentLocationRepository;
 import com.bhancock.finalprojectapplication.repository.VisitedPlacesRepository;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -18,7 +17,6 @@ public class ExploreViewModel extends ViewModel {
     private MutableLiveData<String> mText;
     private MutableLiveData<LatLng> userCoordinates;
     private MutableLiveData<List<VisitedPlaces>> mUserPlaces;
-    private CurrentLocationRepository mRepository;
 
 
     public void init() {

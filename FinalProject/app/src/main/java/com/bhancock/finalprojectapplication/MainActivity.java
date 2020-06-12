@@ -34,22 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //bypassUserLogin();
         testUserLogin();
-    }
-
-    public void bypassUserLogin() {
-        new CountDownTimer(1000, 1000) {
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            public void onFinish() {
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                finish();
-            }
-        }.start();
     }
 
     public void testUserLogin() {
