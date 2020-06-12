@@ -56,12 +56,6 @@ public class HomeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
-        if(savedInstanceState != null) {
-            //Restore the fragment's instance
-            mMyFragment = getSupportFragmentManager().getFragment(savedInstanceState, "myFragmentName");
-
-        }
     }
 
     @Override
@@ -84,7 +78,18 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "onStop()");
+        stopLocationService();
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopLocationService();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
         stopLocationService();
     }
 
