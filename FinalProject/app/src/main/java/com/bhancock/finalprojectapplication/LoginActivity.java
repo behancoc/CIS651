@@ -54,10 +54,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Log.d(TAG, "onCreate() called ");
+
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        Log.d(TAG, "mFirebaseUser " + mFirebaseUser);
 
         mEmailEditText = findViewById(R.id.email);
         mPasswordEditText = findViewById(R.id.password);
@@ -302,6 +307,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+        Log.d(TAG, "updateUI() called...");
+        Log.d(TAG, "mFirebaseUser value: " + mFirebaseUser);
         if (mFirebaseUser != null) {
             findViewById(R.id.display_name).setVisibility(View.GONE);
             findViewById(R.id.phone_number).setVisibility(View.GONE);
