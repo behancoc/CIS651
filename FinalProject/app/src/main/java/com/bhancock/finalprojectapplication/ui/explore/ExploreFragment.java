@@ -41,6 +41,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -93,6 +94,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        mUserLocation = new UserLocation();
 
 
         locationBroadCastReceiver = new LocationBroadCastReceiver();
@@ -258,6 +260,51 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
                 Log.d(TAG, "BroadcastReceiver latitude: " + latitude);
                 Log.d(TAG, "BroadcastReceiver longitude: " + longitude);
+
+
+
+                GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+                mUserLocation.setGeoPoint(geoPoint);
+
+                //Saving user location
+                if (mUserLocation != null) {
+                    DocumentReference userDocumentReference =
+                            firebaseFirestore.collection("User")
+                                    .document(FirebaseAuth.getInstance().getUid());
+
+                    userDocumentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            Log.d(TAG, "I was able to retrieve the current user!");
+
+                            User currentUser = documentSnapshot.toObject(User.class);
+                            mUserLocation.setUser(currentUser);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "I was unable to find the current user :o( ");
+                            e.printStackTrace();
+                            e.getLocalizedMessage();
+                        }
+                    });
+
+                    DocumentReference documentReference =
+                            firebaseFirestore.collection("User Location")
+                                    .document(FirebaseAuth.getInstance().getUid());
+
+                    documentReference.set(mUserLocation).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "I think I just successfully entered the user location to the database");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Enter location into Firestore failed miserably");
+                        }
+                    });
+                }
             }
         }
     }

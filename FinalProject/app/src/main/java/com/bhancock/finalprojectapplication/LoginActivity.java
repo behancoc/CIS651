@@ -28,6 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class LoginActivity extends AppCompatActivity {
@@ -144,8 +145,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 final String emailAddress = mEmailEditText.getText().toString();
-                String userPassword = mPasswordEditText.getText().toString();
                 final String userName = mDisplayNameEditText.getText().toString();
+                final String phoneNumber = mPhoneNumberEditText.getText().toString();
+
 
                 mFirebaseAuth.createUserWithEmailAndPassword(
                         mEmailEditText.getText().toString(),
@@ -161,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 Toast.makeText(getApplicationContext(),
                                                         "SignUp successful.  Verification email sent!",
                                                         Toast.LENGTH_SHORT).show();
-                                                saveUserDataToDB(userName, emailAddress, mFirebaseUser.getUid());
+                                                saveUserDataToDB(userName, emailAddress, mFirebaseUser.getUid(), phoneNumber);
                                                 updateUI();
                                             }
                                         }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
@@ -307,18 +309,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void saveUserDataToDB(String email, String username, String userID) {
-//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//        DatabaseReference userReference = firebaseDatabase.getReference("Users");
-//        userReference.child(mFirebaseUser.getUid())
-//                .setValue(new User(mDisplayNameEditText.getText().toString(),
-//                        mEmailEditText.getText().toString(),
-//                        mPhoneNumberEditText.getText().toString()));
-//
+    private void saveUserDataToDB(String username, String email, String userID, String phoneNumber) {
         User user = new User();
-        user.setUsername(username);
+        user.setUserName(username);
         user.setEmail(email);
         user.setUserId(userID);
+        user.setPhone(phoneNumber);
 
         FirebaseFirestoreSettings firebaseFirestoreSettings = new FirebaseFirestoreSettings.Builder().build();
 
@@ -330,7 +326,7 @@ public class LoginActivity extends AppCompatActivity {
         documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d(TAG, "Check Firestore... a new document shopuld be there...");
+                Log.d(TAG, "Check Firestore... a new document should be there...");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

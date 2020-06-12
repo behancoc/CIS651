@@ -1,41 +1,25 @@
 package com.bhancock.finalprojectapplication.model;
 
-import com.google.firebase.database.ServerValue;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
 
 public class User {
-    public String username;
     public String email;
-
-
-
+    public String userName;
     public String phone;
-    private String user_id;
-    public Object timestamp;
+    private String userId;
+    private @ServerTimestamp Date timestamp;
 
     public User() {
-
     }
 
-    public User(String username, String email, String phone) {
-        this.username = username;
-
+    public User(String username, String email, String userId) {
+        this.userName = username;
         this.email = email;
-        this.phone = phone;
-        this.timestamp = ServerValue.TIMESTAMP;
+        this.userId = userId;
     }
 
-
-    public Object getTimestamp() {
-        return timestamp;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getEmail() {
         return email;
@@ -43,6 +27,22 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPhone() {
