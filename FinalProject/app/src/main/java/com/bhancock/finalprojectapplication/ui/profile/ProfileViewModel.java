@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 import com.bhancock.finalprojectapplication.model.UserPreviousLocation;
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
 import com.bhancock.finalprojectapplication.repository.ProfileGridRepository;
-import com.bhancock.finalprojectapplication.repository.VisitedPlacesRepository;
 
 import java.util.List;
 

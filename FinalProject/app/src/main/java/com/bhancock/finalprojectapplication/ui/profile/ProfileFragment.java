@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.adapter.ProfileGridAdapter;
@@ -31,6 +32,7 @@ public class ProfileFragment extends Fragment {
     private RecyclerView mProfileGridRecyclerView;
     private ProfileGridAdapter mAdapter;
     private Context mContext;
+    private Button mEditProfileButton;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
