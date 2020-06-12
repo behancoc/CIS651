@@ -1,5 +1,6 @@
 package com.bhancock.finalprojectapplication.ui.camera;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
@@ -9,6 +10,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,11 +18,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bhancock.finalprojectapplication.HomeActivity;
 import com.bhancock.finalprojectapplication.PermissionUtils;
 import com.bhancock.finalprojectapplication.PhotoPreviewActivity;
 import com.bhancock.finalprojectapplication.R;
@@ -28,6 +32,8 @@ import com.bhancock.finalprojectapplication.R;
 import static android.app.Activity.RESULT_OK;
 
 public class CameraFragment extends Fragment {
+
+    private static final String TAG = CameraFragment.class.getSimpleName();
 
     private CameraViewModel cameraViewModel;
     private static final int REQUEST_FOR_CAMERA=0011;
@@ -39,12 +45,29 @@ public class CameraFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d(TAG, "handleOnBackPressed called...");
+                Intent intent = new Intent(getContext(), HomeActivity.class);
+                startActivity(intent);
+            }
+        };
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
         cameraViewModel =
                 ViewModelProviders.of(this).get(CameraViewModel.class);
         View root = inflater.inflate(R.layout.fragment_camera, container, false);
+
 
         return root;
     }

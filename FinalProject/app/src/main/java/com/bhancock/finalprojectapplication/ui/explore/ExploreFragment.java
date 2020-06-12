@@ -186,7 +186,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraMoveCanceledListener(this);
 
-        updateCameraToLastKnownPosition();
+        //updateCameraToLastKnownPosition();
+
     }
 
 
