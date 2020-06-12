@@ -79,7 +79,6 @@ public class PhotoPreviewActivity extends AppCompatActivity {
         uploadImage();
         Intent intent = new Intent(PhotoPreviewActivity.this, HomeActivity.class);
         startActivity(intent);
-        //finish();
     }
 
     public static class Post {

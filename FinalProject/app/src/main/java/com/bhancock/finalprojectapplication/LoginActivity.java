@@ -28,6 +28,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import java.util.UUID;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -52,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         mEmailEditText = findViewById(R.id.email);
@@ -138,15 +142,17 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                final String emailAddress = mEmailEditText.getText().toString();
+                String userPassword = mPasswordEditText.getText().toString();
+                final String userName = mDisplayNameEditText.getText().toString();
+
                 mFirebaseAuth.createUserWithEmailAndPassword(
                         mEmailEditText.getText().toString(),
                         mPasswordEditText.getText().toString()).addOnSuccessListener(
                         LoginActivity.this, new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
-
-
-
                                 mFirebaseUser = authResult.getUser();
                                 mFirebaseUser.sendEmailVerification().addOnSuccessListener(
                                         LoginActivity.this, new OnSuccessListener<Void>() {
@@ -155,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 Toast.makeText(getApplicationContext(),
                                                         "SignUp successful.  Verification email sent!",
                                                         Toast.LENGTH_SHORT).show();
-                                                saveUserDataToDB();
+                                                saveUserDataToDB(userName, emailAddress, mFirebaseUser.getUid());
                                                 updateUI();
                                             }
                                         }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
@@ -174,8 +180,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
             }
         });
 
@@ -303,12 +307,40 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void saveUserDataToDB() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference userReference = firebaseDatabase.getReference("Users");
-        userReference.child(mFirebaseUser.getUid())
-                .setValue(new User(mDisplayNameEditText.getText().toString(),
-                        mEmailEditText.getText().toString(),
-                        mPhoneNumberEditText.getText().toString()));
+    private void saveUserDataToDB(String email, String username, String userID) {
+//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//        DatabaseReference userReference = firebaseDatabase.getReference("Users");
+//        userReference.child(mFirebaseUser.getUid())
+//                .setValue(new User(mDisplayNameEditText.getText().toString(),
+//                        mEmailEditText.getText().toString(),
+//                        mPhoneNumberEditText.getText().toString()));
+//
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setUserId(userID);
+
+        FirebaseFirestoreSettings firebaseFirestoreSettings = new FirebaseFirestoreSettings.Builder().build();
+
+        firebaseFirestore.setFirestoreSettings(firebaseFirestoreSettings);
+
+        DocumentReference documentReference = firebaseFirestore.collection("User")
+                .document(mFirebaseUser.getUid());
+
+        documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "Check Firestore... a new document shopuld be there...");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.getLocalizedMessage();
+                e.printStackTrace();
+                Log.d(TAG, "That didn't go as intended....");
+            }
+        });
+
+        Log.d(TAG, "New User should have been added to the database");
     }
 }

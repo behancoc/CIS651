@@ -82,7 +82,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     private UserLocation mUserLocation;
     private FirebaseFirestore firebaseFirestore;
     private boolean isMapReady;
-
+    private LocationBroadCastReceiver locationBroadCastReceiver;
 
 
     @Override
@@ -95,7 +95,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
 
 
-        LocationBroadCastReceiver locationBroadCastReceiver = new LocationBroadCastReceiver();
+        locationBroadCastReceiver = new LocationBroadCastReceiver();
         IntentFilter intentFilter = new IntentFilter("ACTION_LOCATION_DATA");
 
         getActivity().registerReceiver(locationBroadCastReceiver, intentFilter);
@@ -149,7 +149,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public void onStart() {
         Log.d(TAG, "onStart");
         super.onStart();
-
     }
 
     @Override
@@ -163,6 +162,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     public void onStop() {
         Log.d(TAG, "onStop");
         super.onStop();
+
+        getActivity().unregisterReceiver(locationBroadCastReceiver);
     }
 
 

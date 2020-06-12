@@ -183,5 +183,4 @@ public class HomeActivity extends AppCompatActivity {
 
         return isUseLocationEnabledOnDevice;
     }
-
 }
