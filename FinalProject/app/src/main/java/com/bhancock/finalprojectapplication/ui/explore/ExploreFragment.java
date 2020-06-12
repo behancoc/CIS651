@@ -2,7 +2,6 @@ package com.bhancock.finalprojectapplication.ui.explore;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bhancock.finalprojectapplication.PermissionUtils;
@@ -49,11 +46,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
-
-import java.util.List;
-import java.util.Timer;
 
 public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -94,6 +90,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     private boolean isMapReady;
     private boolean userInteractingWithMap;
     private LocationBroadCastReceiver locationBroadCastReceiver;
+    boolean updatingCameraToLastKnownPosition;
 
 
     @Override
@@ -186,8 +183,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraMoveCanceledListener(this);
 
-        //updateCameraToLastKnownPosition();
-
+        updateCameraToLastKnownPosition();
     }
 
 
@@ -232,8 +228,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
 
     @SuppressLint("MissingPermission")
-    private void updateCameraToLastKnownPosition() {
-
+    private boolean updateCameraToLastKnownPosition() {
+        updatingCameraToLastKnownPosition = true;
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -246,10 +242,13 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         });
+
+        Log.d(TAG, "updateCameraToLastKnownPosition: " + true);
+        return updatingCameraToLastKnownPosition;
     }
 
     private void updateCameraToFollowUserLocation(final double latitude, final double longitude) {
-        if (!userInteractingWithMap) {
+        if (!userInteractingWithMap && !updatingCameraToLastKnownPosition) {
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(latitude, longitude))
                     .zoom(18).bearing(0).tilt(70).build();
@@ -259,12 +258,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onCameraIdle() {
+
         new CountDownTimer(10000, 1000) {
             public void onTick(long millisUntilFinished) {
 
             }
             public void onFinish() {
                 userInteractingWithMap = false;
+                updatingCameraToLastKnownPosition = false;
+                Log.d(TAG, "updatingCameraToLastKnownPosition: " + false);
             }
         }.start();
     }
@@ -293,6 +295,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
         } else if(reason == GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) {
             Log.d(TAG, "I'm moving the map");
+
+            if(updatingCameraToLastKnownPosition) {
+                Log.d(TAG, "updatingCameraToLastKnownPosition: " + true);
+            }
+
             userInteractingWithMap = false;
             Log.d(TAG, "userInteractingWithMap is: " + false);
         }
@@ -311,8 +318,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 updateCameraToFollowUserLocation(latitude, longitude);
 
 
-                GeoPoint geoPoint = new GeoPoint(latitude, longitude);
-                mUserLocation.setGeoPoint(geoPoint);
+
+
+//                Log.d(TAG, "mUserLocation geopoint lat: " + mUserLocation.getGeoPoint().getLatitude());
+//                Log.d(TAG, "mUserLocation geopoint long: " + mUserLocation.getGeoPoint().getLongitude());
 
                 //Saving user location
                 if (mUserLocation != null) {
@@ -337,6 +346,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                         }
                     });
 
+                    GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+                    mUserLocation.setGeoPoint(geoPoint);
                     DocumentReference documentReference =
                             firebaseFirestore.collection("User Location")
                                     .document(FirebaseAuth.getInstance().getUid());
@@ -344,7 +355,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                     documentReference.set(mUserLocation).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+
                             Log.d(TAG, "I think I just successfully entered the user location to the database");
+                            Log.d(TAG, "mUserLocation geopoint lat: " + mUserLocation.getGeoPoint().getLatitude());
+                            Log.d(TAG, "mUserLocation geopoint long: " + mUserLocation.getGeoPoint().getLongitude());
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
