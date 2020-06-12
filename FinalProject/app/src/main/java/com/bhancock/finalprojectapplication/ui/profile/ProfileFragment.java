@@ -1,5 +1,6 @@
 package com.bhancock.finalprojectapplication.ui.profile;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toolbar;
 
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.adapter.ProfileGridAdapter;
@@ -33,6 +37,7 @@ public class ProfileFragment extends Fragment {
     private ProfileGridAdapter mAdapter;
     private Context mContext;
     private Button mEditProfileButton;
+    private Toolbar mToolbar;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -64,6 +69,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        setHasOptionsMenu(true);
+
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.profile_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
 }
