@@ -3,6 +3,7 @@
     <string name="title_home">Feed</string>
     <string name="title_navigation">Explore</string>
     <string name="title_camera">Camera</string>
+    <string name="title_logout">Log out</string>
     <string name="title_favorites">Favorites</string>
     <string name="title_profile">Profile</string>
     <string name="title_activity_login">LoginActivity</string>

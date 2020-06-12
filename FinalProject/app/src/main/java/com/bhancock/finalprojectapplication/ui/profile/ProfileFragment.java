@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -18,15 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toolbar;
 
+import com.bhancock.finalprojectapplication.LoginActivity;
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.adapter.ProfileGridAdapter;
 import com.bhancock.finalprojectapplication.adapter.VisitedPlacesAdapter;
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -38,6 +43,8 @@ public class ProfileFragment extends Fragment {
     private Context mContext;
     private Button mEditProfileButton;
     private Toolbar mToolbar;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -49,6 +56,13 @@ public class ProfileFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 3);
         mProfileGridRecyclerView.setLayoutManager(layoutManager);
         mProfileGridRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
     }
 
     @Override
@@ -74,10 +88,28 @@ public class ProfileFragment extends Fragment {
         return root;
     }
 
+    private void logoutUser() {
+        mFirebaseAuth.signOut();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+
+
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile_logout:
+                logoutUser();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
