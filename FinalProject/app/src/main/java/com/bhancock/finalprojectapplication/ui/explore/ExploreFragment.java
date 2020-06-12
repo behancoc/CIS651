@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,9 +52,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.List;
+import java.util.Timer;
+
 public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
+        GoogleMap.OnCameraMoveStartedListener,
+        GoogleMap.OnCameraMoveListener,
+        GoogleMap.OnCameraMoveCanceledListener,
+        GoogleMap.OnCameraIdleListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     /**
@@ -83,6 +92,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     private UserLocation mUserLocation;
     private FirebaseFirestore firebaseFirestore;
     private boolean isMapReady;
+    private boolean userInteractingWithMap;
     private LocationBroadCastReceiver locationBroadCastReceiver;
 
 
@@ -93,8 +103,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Log.d(TAG, "onCreate() called....");
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-
         mUserLocation = new UserLocation();
+        userInteractingWithMap = false;
 
 
         locationBroadCastReceiver = new LocationBroadCastReceiver();
@@ -154,13 +164,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onResume() {
-        Log.d(TAG, "onResume");
-        super.onResume();
-
-    }
-
-    @Override
     public void onStop() {
         Log.d(TAG, "onStop");
         super.onStop();
@@ -177,6 +180,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
+
+        mMap.setOnCameraIdleListener(this);
+        mMap.setOnCameraMoveStartedListener(this);
+        mMap.setOnCameraMoveListener(this);
+        mMap.setOnCameraMoveCanceledListener(this);
+
         updateCameraToLastKnownPosition();
     }
 
@@ -236,19 +245,56 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         });
+    }
+
+    private void updateCameraToFollowUserLocation(final double latitude, final double longitude) {
+        if (!userInteractingWithMap) {
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(latitude, longitude))
+                    .zoom(18).bearing(0).tilt(70).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+    }
+
+    @Override
+    public void onCameraIdle() {
+        new CountDownTimer(10000, 1000) {
+            public void onTick(long millisUntilFinished) {
+
+            }
+            public void onFinish() {
+                userInteractingWithMap = false;
+            }
+        }.start();
+    }
+
+    @Override
+    public void onCameraMoveCanceled() {
 
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onViewStateRestored called");
-        super.onViewStateRestored(savedInstanceState);
+    public void onCameraMove() {
+
     }
 
     @Override
-    public void onDestroyView() {
-        Log.d(TAG, "onDestroyView called");
-        super.onDestroyView();
+    public void onCameraMoveStarted(int reason) {
+        if(reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+            Log.d(TAG, "The user gestured on the map.");
+            userInteractingWithMap = true;
+            Log.d(TAG, "userInteractingWithMap is: " + true);
+
+        } else if(reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+            Log.d(TAG, "The user tapped something on the map.");
+            userInteractingWithMap = true;
+            Log.d(TAG, "userInteractingWithMap is: " + true);
+
+        } else if(reason == GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) {
+            Log.d(TAG, "I'm moving the map");
+            userInteractingWithMap = false;
+            Log.d(TAG, "userInteractingWithMap is: " + false);
+        }
     }
 
     public class LocationBroadCastReceiver extends BroadcastReceiver {
@@ -261,6 +307,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Log.d(TAG, "BroadcastReceiver latitude: " + latitude);
                 Log.d(TAG, "BroadcastReceiver longitude: " + longitude);
 
+                updateCameraToFollowUserLocation(latitude, longitude);
 
 
                 GeoPoint geoPoint = new GeoPoint(latitude, longitude);
