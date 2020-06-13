@@ -43,6 +43,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -50,6 +52,12 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.model.DirectionsResult;
+
+import java.time.format.DateTimeFormatter;
 
 public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -91,6 +99,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     private boolean userInteractingWithMap;
     private LocationBroadCastReceiver locationBroadCastReceiver;
     boolean updatingCameraToLastKnownPosition;
+    private GeoApiContext geoApiContext;
+    PlacesClient placesClient;
+
 
 
     @Override
@@ -102,6 +113,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         firebaseFirestore = FirebaseFirestore.getInstance();
         mUserLocation = new UserLocation();
         userInteractingWithMap = false;
+
+        // Initialize the SDK
+        Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_api_key));
+        // Create a new Places client instance
+        placesClient = Places.createClient(getActivity().getApplicationContext());
+
 
 
         locationBroadCastReceiver = new LocationBroadCastReceiver();
@@ -184,6 +201,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnCameraMoveCanceledListener(this);
 
         updateCameraToLastKnownPosition();
+
+        if(geoApiContext == null) {
+            geoApiContext = new GeoApiContext.Builder()
+                    .apiKey(getString(R.string.google_api_key)).build();
+        }
     }
 
 
@@ -305,6 +327,39 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    private void getDirections(UserLocation currentUserLocation) {
+        DirectionsApiRequest directionsApiRequest = new DirectionsApiRequest(geoApiContext);
+        directionsApiRequest.alternatives(true);
+//        directionsApiRequest.arrivalTime();
+//        directionsApiRequest.departureTimeNow();
+        com.google.maps.model.LatLng latLngOriginPosition = new com.google.maps.model.LatLng(
+                currentUserLocation.getGeoPoint().getLatitude(),
+                currentUserLocation.getGeoPoint().getLatitude());
+
+        directionsApiRequest.origin(latLngOriginPosition);
+
+        //TODO: Change the hardcoded destination once I figure out how to use the Places API...
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(37.3992985, 122.0740954);
+        directionsApiRequest.destination(destination).setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                Log.d(TAG, "result summary: " + result.routes[0].summary);
+                Log.d(TAG, "result to string: " + result.routes[0].toString());
+                Log.d(TAG, "result [0] distance: " + result.routes[0].legs[0].distance.humanReadable);
+                Log.d(TAG, "result [0] endAddress: " + result.routes[0].legs[0].endAddress.toString());
+                Log.d(TAG, "result [0] startAddress: " + result.routes[0].legs[0].startAddress.toString());
+                Log.d(TAG, "result [0] duration: " + result.routes[0].legs[0].duration.humanReadable);
+
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
+            }
+        });
+
+    }
+
     public class LocationBroadCastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -315,16 +370,16 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Log.d(TAG, "BroadcastReceiver latitude: " + latitude);
                 Log.d(TAG, "BroadcastReceiver longitude: " + longitude);
 
-                updateCameraToFollowUserLocation(latitude, longitude);
-
-
-
-
-//                Log.d(TAG, "mUserLocation geopoint lat: " + mUserLocation.getGeoPoint().getLatitude());
-//                Log.d(TAG, "mUserLocation geopoint long: " + mUserLocation.getGeoPoint().getLongitude());
+//                updateCameraToFollowUserLocation(latitude, longitude);
 
                 //Saving user location
                 if (mUserLocation != null) {
+
+
+                    //TODO: Calling this method here for the time being... better to do it wherever the user searches for a place to go...
+                    //getDirections(mUserLocation);
+
+
                     DocumentReference userDocumentReference =
                             firebaseFirestore.collection("User")
                                     .document(FirebaseAuth.getInstance().getUid());
