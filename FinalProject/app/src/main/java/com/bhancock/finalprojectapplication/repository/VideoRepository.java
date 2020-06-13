@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.bhancock.finalprojectapplication.model.HomeFeedItem;
+import com.bhancock.finalprojectapplication.model.Channel;
 import com.bhancock.finalprojectapplication.model.Video;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,6 +60,8 @@ public class VideoRepository {
     }
 
     public void fetchJSON() {
+
+
         Log.d(TAG, "Attempting to fetch JSON");
 
         String url = "https://api.letsbuildthatapp.com/youtube/home_feed";
@@ -86,7 +88,7 @@ public class VideoRepository {
                     GsonBuilder builder = new GsonBuilder();
                     Gson gson = builder.create();
 
-                    HomeFeedItem homeFeed = gson.fromJson(responseString, HomeFeedItem.class);
+                    Channel.HomeFeedItem homeFeed = gson.fromJson(responseString, Channel.HomeFeedItem.class);
 
                     for(Video foundVideo : homeFeed.getVideos()) {
                         dataset.add(foundVideo);

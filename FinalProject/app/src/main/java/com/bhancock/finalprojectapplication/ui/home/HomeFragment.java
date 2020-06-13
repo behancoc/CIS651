@@ -7,25 +7,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.adapter.HomeFeedListAdapter;
-import com.bhancock.finalprojectapplication.adapter.VisitedPlacesAdapter;
-import com.bhancock.finalprojectapplication.model.HomeFeedItem;
-import com.bhancock.finalprojectapplication.model.Video;
-import com.bhancock.finalprojectapplication.model.VisitedPlaces;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.bhancock.finalprojectapplication.adapter.PackageTabAdapter;
+import com.google.android.material.tabs.TabLayout;
 
 public class HomeFragment extends Fragment {
 
@@ -36,6 +30,12 @@ public class HomeFragment extends Fragment {
     private HomeFeedListAdapter mAdapter;
     private ProgressBar mProgressBar;
     private Context mContext;
+
+    private Context context;
+    private Toolbar toolbar;
+    public static TabLayout tabLayout;
+    public static ViewPager viewPager;
+    private PackageTabAdapter adapter;
 
     private void initRecyclerView() {
         mContext = getActivity().getApplicationContext();
@@ -56,22 +56,29 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        homeViewModel.init();
-
+//        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+//        homeViewModel.init();
+//
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        mRecyclerView = root.findViewById(R.id.recycler_view);
-        mProgressBar = root.findViewById(R.id.progress_bar);
 
+        toolbar = (Toolbar) root.findViewById(R.id.toolbar);
+        viewPager = (ViewPager) root.findViewById(R.id.viewPager);
+        viewPager.setOffscreenPageLimit(2);
+        tabLayout = (TabLayout) root.findViewById(R.id.packagetablayout);
+        createTabFragment();
 
-        initRecyclerView();
-
-        homeViewModel.getVideoList().observe(getViewLifecycleOwner(), new Observer<List<Video>>() {
-            @Override
-            public void onChanged(List<Video> videoList) {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+//        mRecyclerView = root.findViewById(R.id.recycler_view);
+//        mProgressBar = root.findViewById(R.id.progress_bar);
+//
+//
+//        initRecyclerView();
+//
+//        homeViewModel.getVideoList().observe(getViewLifecycleOwner(), new Observer<List<Video>>() {
+//            @Override
+//            public void onChanged(List<Video> videoList) {
+//                mAdapter.notifyDataSetChanged();
+//            }
+//        });
 
 
 //        homeViewModel.getHomeFeedItems().observe(getViewLifecycleOwner(), new Observer<ArrayList<HomeFeedItem>>() {
@@ -81,5 +88,11 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
         return root;
+    }
+
+    private void createTabFragment() {
+        adapter = new PackageTabAdapter(getChildFragmentManager(), tabLayout);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 }

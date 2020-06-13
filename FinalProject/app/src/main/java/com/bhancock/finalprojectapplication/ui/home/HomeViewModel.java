@@ -6,13 +6,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.bhancock.finalprojectapplication.model.HomeFeedItem;
 import com.bhancock.finalprojectapplication.model.Video;
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
 import com.bhancock.finalprojectapplication.repository.VideoRepository;
 import com.bhancock.finalprojectapplication.repository.VisitedPlacesRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
