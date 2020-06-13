@@ -6,15 +6,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.bhancock.finalprojectapplication.ui.home.DomesticFragment;
-import com.bhancock.finalprojectapplication.ui.home.InternationalFragment;
+import com.bhancock.finalprojectapplication.ui.home.UserFeedFragment;
+import com.bhancock.finalprojectapplication.ui.home.FollowingFeedFragment;
 import com.google.android.material.tabs.TabLayout;
 
-public class PackageTabAdapter extends FragmentStatePagerAdapter {
+public class TabLayoutAdapter extends FragmentStatePagerAdapter {
 
     TabLayout tabLayout;
 
-    public PackageTabAdapter(FragmentManager fragmentManager, TabLayout tabLayout) {
+    public TabLayoutAdapter(FragmentManager fragmentManager, TabLayout tabLayout) {
         super(fragmentManager);
         this.tabLayout = tabLayout;
     }
@@ -25,10 +25,10 @@ public class PackageTabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Fragment fragment = null;
         if (position == 0) {
-            fragment = new DomesticFragment();
+            fragment = new UserFeedFragment();
         }
         else if(position == 1) {
-            fragment = new InternationalFragment();
+            fragment = new FollowingFeedFragment();
         }
         return fragment;
     }

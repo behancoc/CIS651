@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <ImageView
             android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/ic_launcher" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,58 +28,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/trip_location_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/packages"
+                    android:text="Location Title"
                     android:lines="1"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/price_bar"
+                android:id="@+id/trip_details_line_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title_bar">
                 <TextView
-                    android:id="@+id/price"
+                    android:id="@+id/trip_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text="Rs. 4999"
-                    android:textSize="18sp" />
-                <TextView
-                    android:id="@+id/discount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:text="10% off"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:text="Trip Details"
+                    android:textSize="14sp" />
+
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/cut_rate_bar"
+                android:id="@+id/trip_likes_line_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/price_bar">
-                <TextView
-                    android:id="@+id/cut_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:background="@drawable/strike_through"
-                    android:text="Rs. 5999"
-                    android:textSize="14sp" />
-                <RatingBar
-                    android:id="@+id/rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:numStars="5"
-                    android:rating="1.7"
-                    android:saveEnabled="true"
-                    android:stepSize="0.1" />
+                android:layout_below="@+id/trip_details_line_item">
+
+                <LinearLayout
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:src="@drawable/ic_baseline_thumb_up_24"
+                        android:id="@+id/like_btn"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"/>
+
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/like_count"
+                        android:text="0 likes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>

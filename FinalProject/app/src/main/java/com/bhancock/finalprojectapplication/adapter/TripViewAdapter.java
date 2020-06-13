@@ -13,16 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bhancock.finalprojectapplication.HomeActivity;
 import com.bhancock.finalprojectapplication.R;
-import com.bhancock.finalprojectapplication.model.Product;
+import com.bhancock.finalprojectapplication.model.Trip;
 import com.bumptech.glide.Glide;
-
-
-
 import java.util.ArrayList;
-public class PackageViewAdapter extends RecyclerView.Adapter<PackageViewAdapter.MyViewHolder> {
+
+public class TripViewAdapter extends RecyclerView.Adapter<TripViewAdapter.MyViewHolder> {
     private Context context;
-    private ArrayList<Product> dataModel;
+    private ArrayList<Trip> trips;
     private int width, height;
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView image_view;
         TextView text_title;
@@ -30,31 +29,29 @@ public class PackageViewAdapter extends RecyclerView.Adapter<PackageViewAdapter.
         TextView discount;
         TextView cut_price;
         RatingBar rating;
-        RelativeLayout price_bar;
-        RelativeLayout cut_rate_bar;
+        RelativeLayout tripDetailsRelativeLayout;
+        RelativeLayout tripLikeCountRelativeLayout;
         View itemView;
+
         public MyViewHolder(View view) {
             super(view);
             this.image_view = (ImageView) view.findViewById(R.id.image_view);
-            this.text_title = (TextView) view.findViewById(R.id.title);
-            this.price = (TextView) view.findViewById(R.id.price);
-            this.discount = (TextView) view.findViewById(R.id.discount);
-            this.cut_price = (TextView) view.findViewById(R.id.cut_price);
-            this.rating = (RatingBar) view.findViewById(R.id.rating);
-            this.price_bar = (RelativeLayout) view.findViewById(R.id.price_bar);
-            this.cut_rate_bar = (RelativeLayout) view.findViewById(R.id.cut_rate_bar);
+            this.text_title = (TextView) view.findViewById(R.id.trip_location_title);
+            this.price = (TextView) view.findViewById(R.id.trip_details);;
+            this.tripDetailsRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_details_line_item);
+            this.tripLikeCountRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_likes_line_item);
             this.itemView = view;
         }
     }
-    public PackageViewAdapter(Context _context, ArrayList<Product> data) {
+    public TripViewAdapter(Context _context, ArrayList<Trip> data) {
         this.context = _context;
-        this.dataModel = data;
+        this.trips = data;
         this.width = 160;
         this.height = 100;
     }
-    public PackageViewAdapter(Context _context, ArrayList<Product> data, int _width, int _height) {
+    public TripViewAdapter(Context _context, ArrayList<Trip> data, int _width, int _height) {
         this.context = _context;
-        this.dataModel = data;
+        this.trips = data;
         this.width = _width;
         this.height = _height;
     }
@@ -62,7 +59,7 @@ public class PackageViewAdapter extends RecyclerView.Adapter<PackageViewAdapter.
     public MyViewHolder onCreateViewHolder(ViewGroup parent,
                                            int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.package_list, parent, false);
+                .inflate(R.layout.trip_list, parent, false);
         // view.setOnClickListener(MainActivity.myOnClickListener);
         MyViewHolder myViewHolder = new MyViewHolder(view);
         return myViewHolder;
@@ -71,19 +68,16 @@ public class PackageViewAdapter extends RecyclerView.Adapter<PackageViewAdapter.
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         try{
             Glide.with(holder.itemView)
-                    .load(getImage(dataModel.get(position).getImage()))
+                    .load(getImage(trips.get(position).getMapImage()))
                     .fitCenter()
                     .into(holder.image_view);
-            holder.text_title.setText(dataModel.get(position).getTitle());
-            holder.price.setText(context.getString(R.string.price, dataModel.get(position).getPrice()));
-            holder.cut_price.setText(context.getString(R.string.price, dataModel.get(position).getCut_price()));
-            holder.discount.setText(dataModel.get(position).getDiscount());
-            holder.rating.setRating(dataModel.get(position).getRating());
+            holder.text_title.setText(trips.get(position).getTitle());
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, HomeActivity.class);
-                    intent.putExtra("dataSet", dataModel.get(position));
+                    intent.putExtra("dataSet", trips.get(position));
                     //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context, holder.image_view, "robot");
                     context.startActivity(intent);
                 }
@@ -96,6 +90,6 @@ public class PackageViewAdapter extends RecyclerView.Adapter<PackageViewAdapter.
     }
     @Override
     public int getItemCount() {
-        return dataModel.size();
+        return trips.size();
     }
 }
