@@ -28,6 +28,7 @@ import com.bhancock.finalprojectapplication.PermissionUtils;
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.model.User;
 import com.bhancock.finalprojectapplication.model.UserLocation;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -46,6 +47,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -59,10 +62,13 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
+import com.google.maps.PlaceDetailsRequest;
 import com.google.maps.model.DirectionsResult;
 
+import java.lang.reflect.Array;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class ExploreFragment extends Fragment implements OnMapReadyCallback,
@@ -178,16 +184,22 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Specify the types of place data to return.
-        autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.LAT_LNG,
+                Place.Field.ADDRESS,
+                Place.Field.USER_RATINGS_TOTAL,
+                Place.Field.RATING,
+                Place.Field.WEBSITE_URI));
 
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 // TODO: Get info about the selected place.
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-
+                Log.i(TAG, "Place latitude: " + place.getLatLng().latitude);
+                Log.i(TAG, "Place longitude: " + place.getLatLng().longitude);
             }
-
             @Override
             public void onError(@NonNull Status status) {
                 // TODO: Handle the error.
