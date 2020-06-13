@@ -41,6 +41,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -190,15 +191,18 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Place.Field.ADDRESS,
                 Place.Field.USER_RATINGS_TOTAL,
                 Place.Field.RATING,
+                Place.Field.PHOTO_METADATAS,
                 Place.Field.WEBSITE_URI));
 
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                // TODO: Get info about the selected place.
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 Log.i(TAG, "Place latitude: " + place.getLatLng().latitude);
                 Log.i(TAG, "Place longitude: " + place.getLatLng().longitude);
+
+                updateCameraToSearchLocation(place.getLatLng().latitude,
+                                             place.getLatLng().longitude);
             }
             @Override
             public void onError(@NonNull Status status) {
@@ -206,12 +210,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
-
-
         return root;
     }
-
-
 
     @Override
     public void onStart() {
@@ -311,7 +311,23 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         return updatingCameraToLastKnownPosition;
     }
 
-    private void updateCameraToFollowUserLocation(final double latitude, final double longitude) {
+    private void updateCameraToSearchLocation(final double latitude, final double longitude) {
+
+        double bottomBoundary = latitude - 1;
+        double leftBoundary = longitude - 1;
+        double topBoundary = latitude + 1;
+        double rightBoundary = longitude + 1;
+
+        LatLng upperRightCoordinate = new LatLng(topBoundary, rightBoundary);
+        LatLng lowerLeftCoordinate = new LatLng(topBoundary, rightBoundary);
+
+        LatLngBounds latLngBounds = new LatLngBounds.Builder()
+                .include(upperRightCoordinate)
+                .include(lowerLeftCoordinate)
+                .build();
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50));
+
         if (!userInteractingWithMap && !updatingCameraToLastKnownPosition) {
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(latitude, longitude))
