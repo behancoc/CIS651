@@ -31,6 +31,16 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:context=".MapsActivity" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/get_directions_fab"
+        android:text="Get Directions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="35dp"
+        android:layout_marginBottom="100dp"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

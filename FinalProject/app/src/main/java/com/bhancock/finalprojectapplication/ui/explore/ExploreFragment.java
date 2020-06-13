@@ -42,6 +42,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,6 +54,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -114,6 +116,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     boolean updatingCameraToLastKnownPosition;
     private GeoApiContext geoApiContext;
     PlacesClient placesClient;
+    ExtendedFloatingActionButton getDirectionsButton;
 
 
 
@@ -176,6 +179,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 //            }
 //        });
 
+
+        getDirectionsButton = root.findViewById(R.id.get_directions_fab);
+        getDirectionsButton.hide();
+
+
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         mapFragment.getMapAsync(this);
         isMapReady = true;
@@ -202,7 +210,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Log.i(TAG, "Place longitude: " + place.getLatLng().longitude);
 
                 updateCameraToSearchLocation(place.getLatLng().latitude,
-                                             place.getLatLng().longitude);
+                                             place.getLatLng().longitude,
+                                             place.getName());
             }
             @Override
             public void onError(@NonNull Status status) {
@@ -311,7 +320,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         return updatingCameraToLastKnownPosition;
     }
 
-    private void updateCameraToSearchLocation(final double latitude, final double longitude) {
+    private void updateCameraToSearchLocation(final double latitude,
+                                              final double longitude,
+                                              final String title) {
 
         double bottomBoundary = latitude - 1;
         double leftBoundary = longitude - 1;
@@ -319,14 +330,18 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         double rightBoundary = longitude + 1;
 
         LatLng upperRightCoordinate = new LatLng(topBoundary, rightBoundary);
-        LatLng lowerLeftCoordinate = new LatLng(topBoundary, rightBoundary);
+        LatLng lowerLeftCoordinate = new LatLng(bottomBoundary, leftBoundary);
 
         LatLngBounds latLngBounds = new LatLngBounds.Builder()
                 .include(upperRightCoordinate)
                 .include(lowerLeftCoordinate)
                 .build();
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50));
+
+        LatLng markerPosition = new LatLng(latitude, longitude);
+        MarkerOptions markerOptions = new MarkerOptions().position(markerPosition).title(title);
+        mMap.addMarker(markerOptions);
 
         if (!userInteractingWithMap && !updatingCameraToLastKnownPosition) {
             CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -334,7 +349,20 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                     .zoom(18).bearing(0).tilt(70).build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+
+        //TODO: Animate button appearance..fade in when camera arrives at search location
+        //TODO: Animate hide when user gets directions
+        getDirectionsButton.show();
+
+        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDirectionsButton.hide();
+            }
+        });
     }
+
+
 
     @Override
     public void onCameraIdle() {

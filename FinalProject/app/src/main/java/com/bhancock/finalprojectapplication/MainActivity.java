@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                             "No user found",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(MainActivity.this,
                             LoginActivity.class));
-                    finish();
+                        finish();
                 }
                 else {
 
