@@ -1,5 +1,7 @@
 package com.bhancock.finalprojectapplication.model;
 
+import java.util.List;
+
 public class Channel {
     private String name;
     private String profileImageUrl;
@@ -15,4 +17,17 @@ public class Channel {
         this.numberOfSubscribers = numberOfSubscribers;
     }
 
+    public static class HomeFeedItem {
+
+        private String imageUrl;
+        private List<Video> videos;
+
+        public HomeFeedItem(List<Video> videos) {
+            this.videos = videos;
+        }
+
+        public List<Video> getVideos() {
+            return videos;
+        }
+    }
 }

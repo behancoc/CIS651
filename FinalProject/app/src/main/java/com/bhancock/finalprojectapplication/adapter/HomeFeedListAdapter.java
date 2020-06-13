@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,19 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bhancock.finalprojectapplication.R;
-import com.bhancock.finalprojectapplication.model.HomeFeedItem;
+import com.bhancock.finalprojectapplication.model.Channel;
 import com.bhancock.finalprojectapplication.model.Video;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFeedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private HomeFeedItem homeFeedItem;
+    private Channel.HomeFeedItem homeFeedItem;
     private List<Video> videoList;
 
 
