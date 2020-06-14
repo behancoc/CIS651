@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -66,6 +68,7 @@ import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +80,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnCameraMoveListener,
         GoogleMap.OnCameraMoveCanceledListener,
         GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnPolylineClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     /**
@@ -115,6 +119,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     PlacesClient placesClient;
     ExtendedFloatingActionButton getDirectionsButton;
     private String directionsKeyAPI;
+    private List<Marker> mapMarkers = new ArrayList<>();
 
 
 
@@ -241,6 +246,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraMoveCanceledListener(this);
+        mMap.setOnPolylineClickListener(this);
 
         updateCameraToLastKnownPosition();
 
@@ -294,6 +300,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onPolylineClick(Polyline polyline) {
+        Log.d(TAG, "Polyline selected!");
+        polyline.setColor(R.color.colorPrimary);
+        polyline.setZIndex(1);
+    }
 
     @SuppressLint("MissingPermission")
     private boolean updateCameraToLastKnownPosition() {
@@ -319,6 +331,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                                               final double longitude,
                                               final String title) {
 
+        removePreviousMarkersFromMap();
+
         double bottomBoundary = latitude - 1;
         double leftBoundary = longitude - 1;
         double topBoundary = latitude + 1;
@@ -336,6 +350,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
         final LatLng markerPosition = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions().position(markerPosition).title(title);
+
         mMap.addMarker(markerOptions);
 
         if (!userInteractingWithMap && !updatingCameraToLastKnownPosition) {
@@ -354,8 +369,21 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
             public void onClick(View v) {
                 getDirections(markerPosition);
                 getDirectionsButton.hide();
+                String latitude = String.valueOf(markerPosition.latitude);
+                String longitude = String.valueOf(markerPosition.longitude);
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
+                Intent googleMapsIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                googleMapsIntent.setPackage("com.google.android.apps.maps");
+                startActivity(googleMapsIntent);
             }
         });
+    }
+
+    private void removePreviousMarkersFromMap() {
+        for (Marker marker : mapMarkers) {
+
+            marker.remove();
+        }
     }
 
 
@@ -493,6 +521,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                     Polyline polyline = mMap.addPolyline(new PolylineOptions().addAll(availablePaths));
                     polyline.setClickable(true);
                     polyline.setColor(R.color.colorAccent);
+
+                    Log.d(TAG, "polyline is clickable?: " + polyline.isClickable());
+
+
                 }
             }
         });
