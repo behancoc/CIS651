@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        toolbar = (Toolbar) root.findViewById(R.id.toolbar);
         viewPager = (ViewPager) root.findViewById(R.id.view_pager);
         viewPager.setOffscreenPageLimit(2);
         tabLayout = (TabLayout) root.findViewById(R.id.tab_layout);

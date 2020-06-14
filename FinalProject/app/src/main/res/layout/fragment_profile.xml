@@ -6,37 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.profile.ProfileFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/user_appBar"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/edit_profile_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_card_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="10dp">
 
-            <TextView
-                android:layout_marginLeft="16dp"
-                android:id="@+id/user_id"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:paddingLeft="20dp"
+                android:src="@mipmap/ic_launcher"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="behancoc" />
+                android:layout_height="match_parent"/>
 
-        </RelativeLayout>
+        </androidx.cardview.widget.CardView>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <LinearLayout
-        app:layout_constraintTop_toBottomOf="@+id/user_appBar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_picture"
@@ -107,34 +102,18 @@
     </LinearLayout>
 
 
-
-
     <Button
         android:id="@+id/edit_profile_button"
         android:layout_width="match_parent"
+        android:layout_margin="10dp"
         android:layout_height="wrap_content"
         android:text="Edit Profile"
         app:layout_constraintBottom_toTopOf="@+id/profile_grid_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.795"/>
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toBottomOf="@+id/edit_profile_button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/profile_grid_recycler_view"
-        />
-
-
+        app:layout_constraintVertical_bias="0.946" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profile_grid_recycler_view"
