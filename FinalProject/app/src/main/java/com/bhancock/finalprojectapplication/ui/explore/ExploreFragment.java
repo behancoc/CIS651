@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -32,7 +30,6 @@ import com.bhancock.finalprojectapplication.PermissionUtils;
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.model.User;
 import com.bhancock.finalprojectapplication.model.UserLocation;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -49,14 +46,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -64,32 +57,18 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
-import com.google.maps.PlaceDetailsRequest;
-import com.google.maps.android.collections.PolylineManager;
+import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttp;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -457,6 +436,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
             public void onResult(DirectionsResult result) {
                 Log.d(TAG, "result: " + result.geocodedWaypoints);
                 Log.d(TAG, "result routes: " + result.routes[0].legs[0].duration);
+
+                getPolylinesFromResult(result);
             }
 
             @Override
@@ -495,37 +476,24 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 //        });
     }
 
-    public void testFunction() {
-        PolylineManager polylineManager = new PolylineManager(mMap);
-        polylineManager.newCollection();
-    }
 
-    private void getPolyline(Response response) {
+    private void getPolylinesFromResult(final DirectionsResult result) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Polyline path = mMap.addPolyline(new PolylineOptions()
-                        .add(
-                                new LatLng(38.893596444352134, -77.0381498336792),
-                                new LatLng(38.89337933372204, -77.03792452812195),
-                                new LatLng(38.89316222242831, -77.03761339187622),
-                                new LatLng(38.893028615148424, -77.03731298446655),
-                                new LatLng(38.892920059048464, -77.03691601753235),
-                                new LatLng(38.892903358095296, -77.03637957572937),
-                                new LatLng(38.89301191422077, -77.03592896461487),
-                                new LatLng(38.89316222242831, -77.03549981117249),
-                                new LatLng(38.89340438498248, -77.03514575958252),
-                                new LatLng(38.893596444352134, -77.0349633693695)
-                        )
-                );
+                for(DirectionsRoute directionsRoute: result.routes) {
+                    List<com.google.maps.model.LatLng> polylinePath = PolylineEncoding.decode(
+                            directionsRoute.overviewPolyline.getEncodedPath());
 
-                // Style the polyline
-                path.setWidth(10);
-                path.setColor(Color.parseColor("#FF0000"));
+                    List<LatLng> availablePaths = new ArrayList<>();
 
-                // Position the map's camera
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.89399, -77.03659), 16));
-
+                    for(com.google.maps.model.LatLng coordinates: polylinePath) {
+                        availablePaths.add(new LatLng(coordinates.lat, coordinates.lng));
+                    }
+                    Polyline polyline = mMap.addPolyline(new PolylineOptions().addAll(availablePaths));
+                    polyline.setClickable(true);
+                    polyline.setColor(R.color.colorAccent);
+                }
             }
         });
     }
