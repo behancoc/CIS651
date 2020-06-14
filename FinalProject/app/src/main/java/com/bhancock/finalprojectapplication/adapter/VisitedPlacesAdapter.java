@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,7 +59,7 @@ public class VisitedPlacesAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private CircleImageView mImage;
+        private ImageView mImage;
         private TextView mName;
 
         public ViewHolder(View view) {
