@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +47,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -67,14 +72,20 @@ import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
 import com.google.maps.PlaceDetailsRequest;
+import com.google.maps.android.collections.PolylineManager;
 import com.google.maps.model.DirectionsResult;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttp;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -121,9 +132,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     private LocationBroadCastReceiver locationBroadCastReceiver;
     boolean updatingCameraToLastKnownPosition;
     private GeoApiContext geoApiContext;
+    private GeoApiContext directionsGeoApiContext;
     PlacesClient placesClient;
     ExtendedFloatingActionButton getDirectionsButton;
-    private AsyncTask mAsyncTask;
     private String directionsKeyAPI;
 
 
@@ -257,6 +268,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         if(geoApiContext == null) {
             geoApiContext = new GeoApiContext.Builder()
                     .apiKey(getString(R.string.google_maps_key)).build();
+        }
+
+        if(directionsGeoApiContext == null) {
+            directionsGeoApiContext = new GeoApiContext.Builder().apiKey(getString(R.string.google_directions_key)).build();
         }
     }
 
@@ -416,7 +431,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void getDirections(LatLng latLng) {
-        DirectionsApiRequest directionsApiRequest = new DirectionsApiRequest(geoApiContext);
+        DirectionsApiRequest directionsApiRequest = new DirectionsApiRequest(directionsGeoApiContext);
         directionsApiRequest.alternatives(true);
 
         Log.d(TAG, "getDirections(): mUserLocation Latitude: " + mUserLocation.getGeoPoint().getLatitude());
@@ -437,6 +452,19 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Log.d(TAG, "getDirections: destination: " + destination.toString());
         directionsApiRequest.destination(destination);
 
+        directionsApiRequest.setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                Log.d(TAG, "result: " + result.geocodedWaypoints);
+                Log.d(TAG, "result routes: " + result.routes[0].legs[0].duration);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
+            }
+        });
+
         final String googleMapsDestination = destination.toString();
         final String googleMapsOrigin = latLngOriginPosition.toString();
 
@@ -444,41 +472,65 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Log.d(TAG, "google maps origin: " + googleMapsOrigin);
 
 
-        directionsKeyAPI = getString(R.string.google_directions_key);
-
-        final OkHttpClient okHttpClient = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url("https://maps.googleapis.com/maps/api/directions/json?origin=" + googleMapsOrigin + "&" +
-                        "destination=" + googleMapsDestination + "&" +"key=" +directionsKeyAPI)
-                .build();
-
-
-
-
-        AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... voids) {
-                try {
-                    Response response = okHttpClient.newCall(request).execute();
-                    if (!response.isSuccessful()) {
-
-                        Log.d(TAG, "response not successful");
-
-                        return null;
-                    }
-                    Log.d(TAG, "response successful");
-
-                    Log.d(TAG, "response body: " + response.body().string());
-                    return response.body().string();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        };
-
-        asyncTask.execute();
+//        directionsKeyAPI = getString(R.string.google_directions_key);
+//
+//        final OkHttpClient okHttpClient = new OkHttpClient();
+//        final Request request = new Request.Builder()
+//                .url("https://maps.googleapis.com/maps/api/directions/json?origin=" + googleMapsOrigin + "&" +
+//                        "destination=" + googleMapsDestination + "&" +"key=" +directionsKeyAPI)
+//                .build();
+//
+//        okHttpClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                Log.e(TAG, "Threw exception");
+//            }
+//
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//                final String myResponse = response.body().string();
+//                Log.d(TAG, "myResponse" + myResponse);
+//
+//            }
+//        });
     }
+
+    public void testFunction() {
+        PolylineManager polylineManager = new PolylineManager(mMap);
+        polylineManager.newCollection();
+    }
+
+    private void getPolyline(Response response) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Polyline path = mMap.addPolyline(new PolylineOptions()
+                        .add(
+                                new LatLng(38.893596444352134, -77.0381498336792),
+                                new LatLng(38.89337933372204, -77.03792452812195),
+                                new LatLng(38.89316222242831, -77.03761339187622),
+                                new LatLng(38.893028615148424, -77.03731298446655),
+                                new LatLng(38.892920059048464, -77.03691601753235),
+                                new LatLng(38.892903358095296, -77.03637957572937),
+                                new LatLng(38.89301191422077, -77.03592896461487),
+                                new LatLng(38.89316222242831, -77.03549981117249),
+                                new LatLng(38.89340438498248, -77.03514575958252),
+                                new LatLng(38.893596444352134, -77.0349633693695)
+                        )
+                );
+
+                // Style the polyline
+                path.setWidth(10);
+                path.setColor(Color.parseColor("#FF0000"));
+
+                // Position the map's camera
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.89399, -77.03659), 16));
+
+            }
+        });
+    }
+
+
 
     public class LocationBroadCastReceiver extends BroadcastReceiver {
         @Override
