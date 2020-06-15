@@ -231,7 +231,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Log.d(TAG, "onStop");
         super.onStop();
 
-        getActivity().unregisterReceiver(locationBroadCastReceiver);
+        try {
+            getActivity().unregisterReceiver(locationBroadCastReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 

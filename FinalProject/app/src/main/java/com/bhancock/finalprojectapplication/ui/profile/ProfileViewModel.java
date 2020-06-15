@@ -1,12 +1,9 @@
 package com.bhancock.finalprojectapplication.ui.profile;
 
-import android.media.Image;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.bhancock.finalprojectapplication.model.UserPreviousLocation;
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
 import com.bhancock.finalprojectapplication.repository.ProfileGridRepository;
 
@@ -14,7 +11,6 @@ import java.util.List;
 
 public class ProfileViewModel extends ViewModel {
 
-    private MutableLiveData<List<UserPreviousLocation>>  mAvailableMapViews;
     private MutableLiveData<List<VisitedPlaces>> mUserPlaces;
     private ProfileGridRepository mRepository;
     private MutableLiveData<String> mText;

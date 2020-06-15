@@ -57,7 +57,7 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
     private DatabaseReference usersRef;
     private Uri imageUri = null;
     private String uid;
-    FirebaseFirestore firebaseFirestore;
+    private FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +72,27 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
 
         firebaseFirestore =  FirebaseFirestore.getInstance();
 
-//        usersRef = firebaseDatabase.getReference("Users/" + currentUser.getUid());
+
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         CollectionReference userRef = firebaseFirestore.collection("User");
+
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                phoneNumber.setText(dataSnapshot.child("phone").getValue().toString());
+                displayName.setText(dataSnapshot.child("displayName").getValue().toString());
+
+                if(dataSnapshot.child("profilePicture").exists()) {
+                    Picasso.get().load(dataSnapshot.child("profilePicture").getValue().toString())
+                            .transform(new CircleTransform()).into(profileImage);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
         DocumentReference userDocumentReference =
