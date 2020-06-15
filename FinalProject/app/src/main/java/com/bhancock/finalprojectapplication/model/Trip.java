@@ -4,6 +4,8 @@ import android.os.Parcelable;
 
 import android.os.Parcel;
 
+import com.google.firebase.firestore.GeoPoint;
+
 public class Trip implements Parcelable {
     private String tripImage;
 
@@ -23,6 +25,8 @@ public class Trip implements Parcelable {
         this.tripDetails = tripDetails;
         this.tripLikes = tripLikes;
     }
+
+//    public Trip(GeoPoint geoPoint )
 
 
     @Override

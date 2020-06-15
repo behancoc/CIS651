@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bhancock.finalprojectapplication.PermissionUtils;
 import com.bhancock.finalprojectapplication.R;
+import com.bhancock.finalprojectapplication.model.Trip;
 import com.bhancock.finalprojectapplication.model.User;
 import com.bhancock.finalprojectapplication.model.UserLocation;
 import com.google.android.gms.common.api.Status;
@@ -57,6 +58,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -346,7 +348,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 .include(lowerLeftCoordinate)
                 .build();
 
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50));
 
         final LatLng markerPosition = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions().position(markerPosition).title(title);
@@ -368,6 +369,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 getDirections(markerPosition);
+
+                CollectionReference tripReference = FirebaseFirestore.getInstance().collection("User")
+                        .document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
+                        .collection("Trips");
+
+                tripReference.add(new Trip());
+
+
+
                 getDirectionsButton.hide();
                 String latitude = String.valueOf(markerPosition.latitude);
                 String longitude = String.valueOf(markerPosition.longitude);
@@ -465,6 +475,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Log.d(TAG, "result: " + result.geocodedWaypoints);
                 Log.d(TAG, "result routes: " + result.routes[0].legs[0].duration);
 
+                Log.d(TAG, "result place id: " + result.geocodedWaypoints[0].placeId);
+
+
+
                 getPolylinesFromResult(result);
             }
 
@@ -480,28 +494,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         Log.d(TAG, "google maps destination" + googleMapsDestination);
         Log.d(TAG, "google maps origin: " + googleMapsOrigin);
 
-
-//        directionsKeyAPI = getString(R.string.google_directions_key);
-//
-//        final OkHttpClient okHttpClient = new OkHttpClient();
-//        final Request request = new Request.Builder()
-//                .url("https://maps.googleapis.com/maps/api/directions/json?origin=" + googleMapsOrigin + "&" +
-//                        "destination=" + googleMapsDestination + "&" +"key=" +directionsKeyAPI)
-//                .build();
-//
-//        okHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                Log.e(TAG, "Threw exception");
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                final String myResponse = response.body().string();
-//                Log.d(TAG, "myResponse" + myResponse);
-//
-//            }
-//        });
     }
 
 

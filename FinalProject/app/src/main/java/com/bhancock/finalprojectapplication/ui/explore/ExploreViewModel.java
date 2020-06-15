@@ -19,19 +19,6 @@ public class ExploreViewModel extends ViewModel {
     private MutableLiveData<List<VisitedPlaces>> mUserPlaces;
 
 
-    public void init() {
-
-
-//        if (mUserLocation != null) {
-//            Log.d(TAG, "mUserPlaces value is not null ");
-//            //I've already retrieved the data
-//            return;
-//        }
-//        Log.d(TAG, "mUserPlaces value is null ");
-//        mRepository = VisitedPlacesRepository.getInstance();
-//        mUserPlaces = mRepository.getUserPlaces();
-    }
-
     public ExploreViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is the explore fragment");

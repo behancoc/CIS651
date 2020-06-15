@@ -118,10 +118,6 @@ public class UserFeedFragment extends Fragment {
 
 
 
-
-        //Query query = firebaseFirestore.collection("User/Qr8M3UK2amYKaFTPNKJCNNgWmt22/Trips/o56JnJa5LhoYFZxpibvF");
-
-
     }
 
     @Override
