@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toolbar;
 
+import com.bhancock.finalprojectapplication.EditProfileActivity;
 import com.bhancock.finalprojectapplication.LoginActivity;
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.adapter.ProfileGridAdapter;
@@ -63,6 +64,8 @@ public class ProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+
     }
 
     @Override
@@ -84,6 +87,15 @@ public class ProfileFragment extends Fragment {
         });
 
         setHasOptionsMenu(true);
+
+        mEditProfileButton = root.findViewById(R.id.edit_profile_button);
+        mEditProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return root;
     }
