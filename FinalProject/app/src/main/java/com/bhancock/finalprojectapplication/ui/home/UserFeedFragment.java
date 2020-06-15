@@ -143,12 +143,8 @@ public class UserFeedFragment extends Fragment {
     }
 
     private void setUpRecyclerView(View view) {
-        //Query query = collectionReference.orderBy("priority", Query.Direction.DESCENDING);
-//        Query query = firebaseFirestore
-//                .collection("User" + "/Qr8M3UK2amYKaFTPNKJCNNgWmt22/" +
-//                        "Trips/" +
-//                        "o56JnJa5LhoYFZxpibvF");
 
+        //TODO: Correct Document path issue so it works at runtime without hardcoded string
         Query query = collectionReference.getFirestore().collection("User")
                 .document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
                 .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);

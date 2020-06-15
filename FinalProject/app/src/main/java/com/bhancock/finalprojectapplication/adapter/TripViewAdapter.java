@@ -26,6 +26,7 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
         ImageView imageView;
         TextView textViewTripLocationTitle;
         TextView textViewTripDetails;
+        TextView textViewTripLikeCount;
         RelativeLayout tripDetailsRelativeLayout;
         RelativeLayout tripLikeCountRelativeLayout;
         View itemView;
@@ -35,6 +36,7 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
             this.imageView = (ImageView) view.findViewById(R.id.image_view);
             this.textViewTripLocationTitle = (TextView) view.findViewById(R.id.trip_location_title);
             this.textViewTripDetails = (TextView) view.findViewById(R.id.trip_details);;
+            this.textViewTripLikeCount = (TextView) view.findViewById(R.id.like_count);
             this.tripDetailsRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_details_line_item);
             this.tripLikeCountRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_likes_line_item);
             this.itemView = view;
@@ -49,21 +51,6 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
         super(options);
     }
 
-//    public TripViewAdapter(Context context, ArrayList<Trip> listOfTrips) {
-//        super();
-//        this.mContext = context;
-//        this.trips = listOfTrips;
-//    }
-//
-//    @Override
-//    public TripViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext())
-//                .inflate(R.layout.trip_list, parent, false);
-//
-//        TripViewHolder tripViewHolder = new TripViewHolder(view);
-//        return tripViewHolder;
-//    }
-
 
     @Override
     public TripViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,26 +60,6 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
         TripViewHolder tripViewHolder = new TripViewHolder(view);
         return tripViewHolder;
     }
-
-//    @Override
-//    public void onBindViewHolder(final TripViewHolder holder, final int position) {
-//        try{
-//            Glide.with(holder.itemView)
-//                    .load(getImage(trips.get(position).getMapImage()))
-//                    .fitCenter()
-//                    .into(holder.image_view);
-//            holder.textViewTripLocationTitle.setText(trips.get(position).getTitle());
-//
-//            holder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(mContext, HomeActivity.class);
-//                    intent.putExtra("dataSet", trips.get(position));
-//                    mContext.startActivity(intent);
-//                }
-//            });
-//        }catch (Exception e){e.printStackTrace();}
-//    }
 
     @Override
     protected void onBindViewHolder(@NonNull TripViewHolder holder, final int position, @NonNull Trip model) {
@@ -113,18 +80,13 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
 //            });
 //        } catch (Exception e){e.printStackTrace();}
 
-        holder.textViewTripLocationTitle.setText(model.getTripDetails());
+        holder.textViewTripLocationTitle.setText(model.getTripTitle());
         holder.textViewTripDetails.setText(model.getTripDetails());
-//        holder.textViewPriority.setText(model.getPriority());
+        holder.textViewTripLikeCount.setText(String.valueOf(model.getTripLikes()));
     }
 
     private int getImage(String imageName) {
         int drawableResourceId = mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName());
         return drawableResourceId;
     }
-//    @Override
-//    public int getItemCount() {
-//        //return trips.size();
-//        return 0;
-//    }
 }
