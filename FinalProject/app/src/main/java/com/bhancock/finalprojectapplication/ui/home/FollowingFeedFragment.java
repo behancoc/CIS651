@@ -32,6 +32,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FollowingFeedFragment extends Fragment {
@@ -45,8 +46,10 @@ public class FollowingFeedFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private CollectionReference collectionReference;
     private String followingPath;
-    String uid;
+    private String uid;
+    Query query;
 
+    List<String> documentIdList = new ArrayList<String>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,38 +116,15 @@ public class FollowingFeedFragment extends Fragment {
 
     private void setUpRecyclerView(View view) {
 
-        //TODO: Correct Document path issue so it works at runtime without hardcoded string
-//        Query query = collectionReference.getFirestore().collection("User")
-//                .document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
-//                .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
+        getAllFollowers(view);
 
-
-        String path = firebaseFirestore.collection("User")
-                .document(FirebaseAuth.getInstance().getUid()).collection("Following")
-                .document().collection("Trips").getPath();
-
-
-
-
-        Log.d(TAG, "path?: " + path);
-//
-//        final Query query = collectionReference.document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
+//        query = collectionReference.document(uid)
 //                .collection("Following").document("gGnJTLNCXRR3gYxHd0LS")
 //                .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
 
-        final Query query = collectionReference.document(uid)
-                .collection("Following").document("gGnJTLNCXRR3gYxHd0LS")
-                .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
-
-        Log.d(TAG, "UID: " + uid);
-
-        getAllFollowers();
-
-
-
-
-//        Query query = firebaseFirestore.collection("posts/" + uid + "/userPosts").orderBy("date", Query.Direction.DESCENDING);
-
+//        query = collectionReference.document(uid)
+//                .collection("Following").document(documentIdList.get(0))
+//                .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
 
 
 
@@ -170,7 +150,13 @@ public class FollowingFeedFragment extends Fragment {
         }).attachToRecyclerView(recyclerView);
     }
 
-    private void getAllFollowers() {
+    private void getAllFollowers(View view) {
+
+        query = collectionReference.document(uid)
+                .collection("Following").document("gGnJTLNCXRR3gYxHd0LS")
+                .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
+
+
         collectionReference.document(uid)
                 .collection("Following")
                 .get()
@@ -182,6 +168,15 @@ public class FollowingFeedFragment extends Fragment {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
 
                                 Log.d(TAG, "document ID: " + document.getId());
+
+                                documentIdList.add(document.getId());
+                                Log.d(TAG, "documentIdList size:" + documentIdList.size());
+
+
+                                query = collectionReference.document(uid)
+                                        .collection("Following").document(document.getId())
+                                        .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
+
                                 getAllFollowersTrips(document.getId());
                             }
                         } else {
@@ -189,7 +184,6 @@ public class FollowingFeedFragment extends Fragment {
                         }
                     }
                 });
-
     }
 
     private void getAllFollowersTrips(String followingId) {
@@ -207,6 +201,8 @@ public class FollowingFeedFragment extends Fragment {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
 
                                 Log.d(TAG, "document ID now: " + document.getId());
+
+
 
                             }
                         } else {

@@ -23,8 +23,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toolbar;
 
+import com.bhancock.finalprojectapplication.CircleTransform;
 import com.bhancock.finalprojectapplication.EditProfileActivity;
 import com.bhancock.finalprojectapplication.LoginActivity;
 import com.bhancock.finalprojectapplication.R;
@@ -33,8 +35,16 @@ import com.bhancock.finalprojectapplication.adapter.VisitedPlacesAdapter;
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
 
@@ -46,6 +56,8 @@ public class ProfileFragment extends Fragment {
     private Toolbar mToolbar;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
+    private DatabaseReference usersRef;
+    private ImageView profileImage;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -64,8 +76,6 @@ public class ProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
-
     }
 
     @Override
@@ -75,16 +85,40 @@ public class ProfileFragment extends Fragment {
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         profileViewModel.init();
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
-        mProfileGridRecyclerView = root.findViewById(R.id.profile_grid_recycler_view);
+//        mProfileGridRecyclerView = root.findViewById(R.id.profile_grid_recycler_view);
 
-        initRecyclerView();
+//        initRecyclerView();
 
-        profileViewModel.getUserPlaces().observe(getViewLifecycleOwner(), new Observer<List<VisitedPlaces>>() {
+//        profileViewModel.getUserPlaces().observe(getViewLifecycleOwner(), new Observer<List<VisitedPlaces>>() {
+//            @Override
+//            public void onChanged(List<VisitedPlaces> visitedPlaces) {
+//                mAdapter.notifyDataSetChanged();
+//            }
+//        });
+
+        profileImage = root.findViewById(R.id.profile_image_view);
+
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        usersRef = firebaseDatabase.getReference("Users/" + mFirebaseUser.getUid());
+
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChanged(List<VisitedPlaces> visitedPlaces) {
-                mAdapter.notifyDataSetChanged();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("profilePicture").exists()) {
+//                    Picasso.get().load(dataSnapshot.child("profilePicture").getValue().toString())
+//                            .transform(new CircleTransform()).into(profileImage);
+
+                    Picasso.get().load(dataSnapshot.child("profilePicture").getValue().toString()).into(profileImage);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+
+
 
         setHasOptionsMenu(true);
 

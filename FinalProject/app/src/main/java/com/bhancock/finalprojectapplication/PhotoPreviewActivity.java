@@ -77,6 +77,7 @@ public class PhotoPreviewActivity extends AppCompatActivity {
 
     public void Publish(View view) {
         uploadImage();
+        finish();
         Intent intent = new Intent(PhotoPreviewActivity.this, HomeActivity.class);
         startActivity(intent);
     }
