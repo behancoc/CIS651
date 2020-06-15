@@ -1,13 +1,10 @@
 package com.bhancock.finalprojectapplication.ui.explore;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bhancock.finalprojectapplication.model.VisitedPlaces;
-import com.bhancock.finalprojectapplication.repository.VisitedPlacesRepository;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;

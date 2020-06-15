@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -267,10 +269,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-
-    /**
-     * Enables the My Location layer if the fine location permission has been granted.
-     */
     private void enableMyLocation() {
         Log.d(TAG, "You are here!!");
 
@@ -375,11 +373,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
             public void onClick(View v) {
                 getDirections(markerPosition);
 
-                CollectionReference tripReference = FirebaseFirestore.getInstance().collection("User")
-                        .document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
-                        .collection("Trips");
-
-                tripReference.add(new Trip());
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setMessage("Are you sure, You wanted to make decision");
+                        alertDialogBuilder.setPositiveButton("yes",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface arg0, int arg1) {
+                                        Toast.makeText(getContext(),"You clicked yes button",Toast.LENGTH_LONG).show();
+                                    }
+                        });
 
 
 
@@ -389,6 +391,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
                 Intent googleMapsIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 googleMapsIntent.setPackage("com.google.android.apps.maps");
+
+
+
 //                startActivity(googleMapsIntent);
             }
         });

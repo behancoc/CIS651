@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -37,11 +39,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class EditProfileActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
@@ -65,7 +69,6 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
         setContentView(R.layout.activity_edit_profile);
 
         profileImage = findViewById(R.id.profile_image);
-        phoneNumber = findViewById(R.id.phone_number_text);
         displayName =findViewById(R.id.display_name_text);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -74,6 +77,8 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
 
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
 
 
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -94,9 +99,10 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
 
             }
         });
-
-
     }
+
+
+
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -237,15 +243,51 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
     }
 
     public void Save(View view) {
-//        if(displayName.getText().toString().equals("") ||
-//                phoneNumber.getText().toString().equals(""))
-//        {
-//            Toast.makeText(this, "Please enter your display name and phone number",
-//                    Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        usersRef.child("phone").setValue(phoneNumber.getText().toString());
-//        usersRef.child("displayname").setValue(displayName.getText().toString());
+        if(displayName.getText().toString().equals("")) {
+            Toast.makeText(this, "Please update your user name",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String userNameUpdated = displayName.getText().toString();
+
+        DocumentReference userDocumentReference =
+                firebaseFirestore.collection("User")
+                        .document(FirebaseAuth.getInstance().getUid());
+
+        userDocumentReference.update("userName", userNameUpdated).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+//        userDocumentReference.update("userName", userNameUpdated).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                if (documentSnapshot.exists()) {
+//                    String userName = documentSnapshot.getString("userName");
+//                    Log.i(TAG, "userName : " + userName);
+//
+//
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Document does not exist", Toast.LENGTH_SHORT).show();
+//                }
+//                Log.d(TAG, "document has data.." + documentSnapshot.getData());
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.d(TAG, "fail");
+//                e.printStackTrace();
+//            }
+//        });
+
+
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
         finish();
     }
