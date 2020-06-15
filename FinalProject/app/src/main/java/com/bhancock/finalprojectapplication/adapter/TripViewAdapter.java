@@ -1,7 +1,6 @@
 package com.bhancock.finalprojectapplication.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bhancock.finalprojectapplication.HomeActivity;
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.model.Trip;
-import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
@@ -26,7 +23,7 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
     private ArrayList<Trip> trips;
 
     public static class TripViewHolder extends RecyclerView.ViewHolder {
-        ImageView image_view;
+        ImageView imageView;
         TextView textViewTripLocationTitle;
         TextView textViewTripDetails;
         RelativeLayout tripDetailsRelativeLayout;
@@ -35,7 +32,7 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
 
         public TripViewHolder(View view) {
             super(view);
-            this.image_view = (ImageView) view.findViewById(R.id.image_view);
+            this.imageView = (ImageView) view.findViewById(R.id.image_view);
             this.textViewTripLocationTitle = (TextView) view.findViewById(R.id.trip_location_title);
             this.textViewTripDetails = (TextView) view.findViewById(R.id.trip_details);;
             this.tripDetailsRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_details_line_item);
@@ -99,24 +96,25 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
 
     @Override
     protected void onBindViewHolder(@NonNull TripViewHolder holder, final int position, @NonNull Trip model) {
-        try{
-            Glide.with(holder.itemView)
-                    .load(getImage(trips.get(position).getMapImage()))
-                    .fitCenter()
-                    .into(holder.image_view);
-            holder.textViewTripLocationTitle.setText(trips.get(position).getTitle());
+//        try{
+//            Glide.with(holder.itemView)
+//                    .load(getImage(trips.get(position).getMapImage()))
+//                    .fitCenter()
+//                    .into(holder.image_view);
+//            holder.textViewTripLocationTitle.setText(trips.get(position).getTitle());
+//
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(mContext, HomeActivity.class);
+//                    intent.putExtra("dataSet", trips.get(position));
+//                    mContext.startActivity(intent);
+//                }
+//            });
+//        } catch (Exception e){e.printStackTrace();}
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, HomeActivity.class);
-                    intent.putExtra("dataSet", trips.get(position));
-                    mContext.startActivity(intent);
-                }
-            });
-        }catch (Exception e){e.printStackTrace();}
-        holder.textViewTripLocationTitle.setText(model.getTitle());
-        holder.textViewTripDetails.setText(model.getDescription());
+        holder.textViewTripLocationTitle.setText(model.getTripDetails());
+        holder.textViewTripDetails.setText(model.getTripDetails());
 //        holder.textViewPriority.setText(model.getPriority());
     }
 
