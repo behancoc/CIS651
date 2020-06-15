@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,9 @@ import android.view.ViewGroup;
 import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.adapter.TripViewAdapter;
 import com.bhancock.finalprojectapplication.model.Trip;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 /**
@@ -33,10 +38,10 @@ public class FollowingFeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.context = getContext();
-        recyclerView = view.findViewById(R.id.recyclerView);
-        populateData();
-        tripViewAdapter = new TripViewAdapter(context, tripList);
-        recyclerView.setAdapter(tripViewAdapter);
+        //recyclerView = view.findViewById(R.id.recyclerView);
+        //populateData();
+        //tripViewAdapter = new TripViewAdapter(context, tripList);
+        //recyclerView.setAdapter(tripViewAdapter);
     }
 
 //    public Trip(String mapImage, String id, String title, String description, int likeCount) {
@@ -46,6 +51,33 @@ public class FollowingFeedFragment extends Fragment {
 //        this.description = description;
 //        this.likeCount = likeCount;
 //    }
+
+    ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
 
 
     private void populateData() {

@@ -12,6 +12,10 @@ public class Trip implements Parcelable {
     private int likeCount;
     private String external_link;
 
+    public Trip() {
+
+    }
+
     public Trip(String mapImage, String id, String title, String description, int likeCount) {
         this.mapImage = mapImage;
         this.id = id;
@@ -24,14 +28,14 @@ public class Trip implements Parcelable {
         this.mapImage = mapImage;
         this.title = title;
         this.description = description;
-        }
+    }
 
-        public Trip(String mapImage, String title, String description, String external_link) {
-            this.mapImage = mapImage;
-            this.title = title;
-            this.description = description;
-            this.external_link = external_link;
-        }
+    public Trip(String mapImage, String title, String description, String external_link) {
+        this.mapImage = mapImage;
+        this.title = title;
+        this.description = description;
+        this.external_link = external_link;
+    }
 
         @Override
         public int describeContents() {
