@@ -5,37 +5,24 @@ import android.os.Parcelable;
 import android.os.Parcel;
 
 public class Trip implements Parcelable {
-    private String mapImage;
-    private String id;
-    private String title;
+    private String tripImage;
+    private String tripTitle;
+    private String tripDetails;
     private String description;
-    private int likeCount;
+    private int tripLikes;
     private String external_link;
 
     public Trip() {
 
     }
 
-    public Trip(String mapImage, String id, String title, String description, int likeCount) {
-        this.mapImage = mapImage;
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.likeCount = likeCount;
+    public Trip(String tripImage, String tripTitle, String tripDetails, int tripLikes) {
+        this.tripImage = tripImage;
+        this.tripTitle = tripTitle;
+        this.tripDetails = tripDetails;
+        this.tripLikes = tripLikes;
     }
 
-    public Trip(String mapImage, String title, String description) {
-        this.mapImage = mapImage;
-        this.title = title;
-        this.description = description;
-    }
-
-    public Trip(String mapImage, String title, String description, String external_link) {
-        this.mapImage = mapImage;
-        this.title = title;
-        this.description = description;
-        this.external_link = external_link;
-    }
 
         @Override
         public int describeContents() {
@@ -44,8 +31,8 @@ public class Trip implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel out, int flags) {
-            out.writeString(mapImage);
-            out.writeString(title);
+            out.writeString(tripImage);
+            out.writeString(tripDetails);
             out.writeString(description);
             out.writeString(external_link);
         }
@@ -58,24 +45,24 @@ public class Trip implements Parcelable {
             }
         };
         private Trip(Parcel in) {
-            mapImage = in.readString();
-            title = in.readString();
+            tripImage = in.readString();
+            tripDetails = in.readString();
             description = in.readString();
             external_link = in.readString();
         }
-        public String getMapImage() {
-            return mapImage;
+        public String getTripImage() {
+            return tripImage;
         }
-        public void setMapImage(String mapImage) {
-            this.mapImage = mapImage;
-        }
-
-        public String getTitle() {
-            return title;
+        public void setTripImage(String tripImage) {
+            this.tripImage = tripImage;
         }
 
-        public void setTitle(String title) {
-            this.title = title;
+        public String getTripDetails() {
+            return tripDetails;
+        }
+
+        public void setTripDetails(String tripDetails) {
+            this.tripDetails = tripDetails;
         }
 
         public String getDescription() {
