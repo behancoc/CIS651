@@ -85,6 +85,10 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
         holder.textViewTripLikeCount.setText(String.valueOf(model.getTripLikes()));
     }
 
+    public void deleteItem(int position) {
+        getSnapshots().getSnapshot(position).getReference().delete();
+    }
+
     private int getImage(String imageName) {
         int drawableResourceId = mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName());
         return drawableResourceId;
