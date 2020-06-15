@@ -74,30 +74,6 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
 
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        CollectionReference userRef = firebaseFirestore.collection("User");
-
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                phoneNumber.setText(dataSnapshot.child("phone").getValue().toString());
-                displayName.setText(dataSnapshot.child("displayName").getValue().toString());
-
-                if(dataSnapshot.child("profilePicture").exists()) {
-                    Picasso.get().load(dataSnapshot.child("profilePicture").getValue().toString())
-                            .transform(new CircleTransform()).into(profileImage);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-        DocumentReference userDocumentReference =
-                firebaseFirestore.collection("User")
-                        .document(FirebaseAuth.getInstance().getUid());
 
 
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
