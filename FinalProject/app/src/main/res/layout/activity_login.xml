@@ -10,7 +10,7 @@
         android:id="@+id/image"
         android:layout_width="211dp"
         android:layout_height="321dp"
-        android:src="@mipmap/ic_launcher_round"
+        android:src="@drawable/splashscreen"
         app:layout_constraintBottom_toTopOf="@+id/root_linear_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

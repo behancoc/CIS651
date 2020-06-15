@@ -397,8 +397,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 googleMapsIntent.setPackage("com.google.android.apps.maps");
 
 
-
-//                startActivity(googleMapsIntent);
             }
         });
     }

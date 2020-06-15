@@ -3,6 +3,7 @@ package com.bhancock.finalprojectapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,12 +17,15 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
+    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mImageView = findViewById(R.id.splash_screen_image);
+        mImageView.setImageResource(R.drawable.splashscreen);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
     }

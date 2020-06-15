@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.os.Parcel;
 
 import com.google.firebase.firestore.GeoPoint;
+import com.google.maps.model.LatLng;
 
 public class Trip implements Parcelable {
     private String tripImage;
@@ -14,6 +15,17 @@ public class Trip implements Parcelable {
     private String description;
     private int tripLikes;
     private String external_link;
+    private GeoPoint location;
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
+
+
 
     public Trip() {
 
