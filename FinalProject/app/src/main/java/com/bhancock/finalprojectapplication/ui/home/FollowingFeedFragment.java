@@ -19,6 +19,7 @@ import com.bhancock.finalprojectapplication.adapter.TripViewAdapter;
 import com.bhancock.finalprojectapplication.model.Trip;
 import com.bhancock.finalprojectapplication.model.User;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -28,7 +29,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -45,6 +45,7 @@ public class FollowingFeedFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private CollectionReference collectionReference;
     private String followingPath;
+    String uid;
 
 
     @Override
@@ -52,47 +53,19 @@ public class FollowingFeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+//        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+
+        CollectionReference userFollowingRef = firebaseFirestore.collection("Following/" + uid + "/UserFollowing");
         collectionReference = firebaseFirestore.collection("User");
+
+
+
 
         DocumentReference userDocumentReference =
                 firebaseFirestore.collection("User")
                         .document(FirebaseAuth.getInstance().getUid());
-
-        Task<QuerySnapshot> querySnapshotTask = collectionReference.getFirestore().collection("User").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                queryDocumentSnapshots.getDocuments().get(0).getReference()
-                        .collection("Following").get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        queryDocumentSnapshots.getDocuments().get(0).getReference()
-                                .collection("Trips").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                followingPath = queryDocumentSnapshots.getDocuments().get(0).getReference().getPath();
-                                Log.d(TAG, "PATH: " + followingPath);
-
-                                queryDocumentSnapshots.getDocuments().get(0).getReference().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        Log.d(TAG, "GET DATA" +documentSnapshot.getData());
-
-                                        //FINALLY GETTING DATA
-
-
-                                    }
-                                });
-
-                                Log.d(TAG, "Metadata: " + queryDocumentSnapshots.getMetadata());
-
-//
-                            }
-                        });
-                    }
-                });
-            }
-        });
 
 
 
@@ -154,11 +127,24 @@ public class FollowingFeedFragment extends Fragment {
 
 
         Log.d(TAG, "path?: " + path);
+//
+//        final Query query = collectionReference.document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
+//                .collection("Following").document("gGnJTLNCXRR3gYxHd0LS")
+//                .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
 
-        final Query query = collectionReference.getFirestore().collection("User")
-                .document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
+        final Query query = collectionReference.document(uid)
                 .collection("Following").document("gGnJTLNCXRR3gYxHd0LS")
                 .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
+
+        Log.d(TAG, "UID: " + uid);
+
+        getAllFollowers();
+
+
+
+
+//        Query query = firebaseFirestore.collection("posts/" + uid + "/userPosts").orderBy("date", Query.Direction.DESCENDING);
+
 
 
 
@@ -183,6 +169,76 @@ public class FollowingFeedFragment extends Fragment {
             }
         }).attachToRecyclerView(recyclerView);
     }
+
+    private void getAllFollowers() {
+        collectionReference.document(uid)
+                .collection("Following")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                Log.d(TAG, "document ID: " + document.getId());
+                                getAllFollowersTrips(document.getId());
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+    private void getAllFollowersTrips(String followingId) {
+        Log.d(TAG, "followingId: " + followingId);
+
+        collectionReference.document(uid)
+                .collection("Following")
+                .document(followingId)
+                .collection("Trips").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                Log.d(TAG, "document ID now: " + document.getId());
+
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+
+    }
+//    private void getAllFollowersTrips(String followerId) {
+//        collectionReference.document(followerId)
+//                .collection("Trips")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (DocumentSnapshot document : task.getResult()) {
+//                                Log.d(TAG, document.getId() + " => " + document.getData());
+//
+//                                Log.d(TAG, "YOU ARE HERE!!!!!");
+//                            }
+//                        } else {
+//                            Log.w(TAG, "Error getting documents.", task.getException());
+//                        }
+//                    }
+//                });
+//
+//    }
+
+
 
     @Override
     public void onStart() {
