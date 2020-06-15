@@ -374,7 +374,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
                 Intent googleMapsIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 googleMapsIntent.setPackage("com.google.android.apps.maps");
-                startActivity(googleMapsIntent);
+//                startActivity(googleMapsIntent);
             }
         });
     }

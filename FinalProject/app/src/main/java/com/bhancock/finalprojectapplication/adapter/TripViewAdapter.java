@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,75 +16,63 @@ import com.bhancock.finalprojectapplication.model.Trip;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
-public class TripViewAdapter extends RecyclerView.Adapter<TripViewAdapter.MyViewHolder> {
-    private Context context;
+public class TripViewAdapter extends RecyclerView.Adapter<TripViewAdapter.TripViewHolder> {
+    private Context mContext;
     private ArrayList<Trip> trips;
-    private int width, height;
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class TripViewHolder extends RecyclerView.ViewHolder {
         ImageView image_view;
-        TextView text_title;
-        TextView price;
-        TextView discount;
-        TextView cut_price;
-        RatingBar rating;
+        TextView tripLocationTitle;
+        TextView tripDetails;
         RelativeLayout tripDetailsRelativeLayout;
         RelativeLayout tripLikeCountRelativeLayout;
         View itemView;
 
-        public MyViewHolder(View view) {
+        public TripViewHolder(View view) {
             super(view);
             this.image_view = (ImageView) view.findViewById(R.id.image_view);
-            this.text_title = (TextView) view.findViewById(R.id.trip_location_title);
-            this.price = (TextView) view.findViewById(R.id.trip_details);;
+            this.tripLocationTitle = (TextView) view.findViewById(R.id.trip_location_title);
+            this.tripDetails = (TextView) view.findViewById(R.id.trip_details);;
             this.tripDetailsRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_details_line_item);
             this.tripLikeCountRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_likes_line_item);
             this.itemView = view;
         }
     }
-    public TripViewAdapter(Context _context, ArrayList<Trip> data) {
-        this.context = _context;
-        this.trips = data;
-        this.width = 160;
-        this.height = 100;
+    public TripViewAdapter(Context context, ArrayList<Trip> listOfTrips) {
+        this.mContext = context;
+        this.trips = listOfTrips;
     }
-    public TripViewAdapter(Context _context, ArrayList<Trip> data, int _width, int _height) {
-        this.context = _context;
-        this.trips = data;
-        this.width = _width;
-        this.height = _height;
-    }
+
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                           int viewType) {
+    public TripViewHolder onCreateViewHolder(ViewGroup parent,
+                                             int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.trip_list, parent, false);
-        // view.setOnClickListener(MainActivity.myOnClickListener);
-        MyViewHolder myViewHolder = new MyViewHolder(view);
-        return myViewHolder;
+
+        TripViewHolder tripViewHolder = new TripViewHolder(view);
+        return tripViewHolder;
     }
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final TripViewHolder holder, final int position) {
         try{
             Glide.with(holder.itemView)
                     .load(getImage(trips.get(position).getMapImage()))
                     .fitCenter()
                     .into(holder.image_view);
-            holder.text_title.setText(trips.get(position).getTitle());
+            holder.tripLocationTitle.setText(trips.get(position).getTitle());
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, HomeActivity.class);
+                    Intent intent = new Intent(mContext, HomeActivity.class);
                     intent.putExtra("dataSet", trips.get(position));
-                    //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context, holder.image_view, "robot");
-                    context.startActivity(intent);
+                    mContext.startActivity(intent);
                 }
             });
         }catch (Exception e){e.printStackTrace();}
     }
     private int getImage(String imageName) {
-        int drawableResourceId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+        int drawableResourceId = mContext.getResources().getIdentifier(imageName, "drawable", mContext.getPackageName());
         return drawableResourceId;
     }
     @Override
