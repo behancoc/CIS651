@@ -336,7 +336,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                                               final double longitude,
                                               final String title) {
 
-        removePreviousMarkersFromMap();
+//        removePreviousMarkersFromMap();
 
         double bottomBoundary = latitude - 1;
         double leftBoundary = longitude - 1;
@@ -353,7 +353,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
 
         final LatLng markerPosition = new LatLng(latitude, longitude);
-        MarkerOptions markerOptions = new MarkerOptions().position(markerPosition).title(title);
+        final MarkerOptions markerOptions = new MarkerOptions().position(markerPosition).title(title);
 
         mMap.addMarker(markerOptions);
 
@@ -386,6 +386,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
 
 
                 getDirectionsButton.hide();
+
+                GeoPoint tripGeoPoint = new GeoPoint(markerPosition.latitude, markerPosition.longitude);
+                createNewTrip(tripGeoPoint);
+
                 String latitude = String.valueOf(markerPosition.latitude);
                 String longitude = String.valueOf(markerPosition.longitude);
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
@@ -399,14 +403,20 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
         });
     }
 
-    private void removePreviousMarkersFromMap() {
-        for (Marker marker : mapMarkers) {
 
-            marker.remove();
-        }
+    public void createNewTrip(GeoPoint geoPoint) {
+        Trip trip = new Trip();
+
+        trip.setTripTitle("My New Trip");
+        trip.setLocation(geoPoint);
+        trip.setTripLikes(0);
+
+        DocumentReference userDocumentReference =
+                firebaseFirestore.collection("User")
+                        .document(FirebaseAuth.getInstance().getUid());
+
+        userDocumentReference.collection("Trips").document().set(trip);
     }
-
-
 
     @Override
     public void onCameraIdle() {

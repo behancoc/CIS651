@@ -266,28 +266,6 @@ public class EditProfileActivity extends AppCompatActivity implements PopupMenu.
             }
         });
 
-//        userDocumentReference.update("userName", userNameUpdated).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                if (documentSnapshot.exists()) {
-//                    String userName = documentSnapshot.getString("userName");
-//                    Log.i(TAG, "userName : " + userName);
-//
-//
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Document does not exist", Toast.LENGTH_SHORT).show();
-//                }
-//                Log.d(TAG, "document has data.." + documentSnapshot.getData());
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.d(TAG, "fail");
-//                e.printStackTrace();
-//            }
-//        });
-
-
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
         finish();
     }
