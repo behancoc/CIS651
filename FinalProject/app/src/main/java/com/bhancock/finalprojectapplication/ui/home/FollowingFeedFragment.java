@@ -44,6 +44,7 @@ public class FollowingFeedFragment extends Fragment {
     private ArrayList<Trip> tripList = new ArrayList<>();
     private FirebaseFirestore firebaseFirestore;
     private CollectionReference collectionReference;
+    private String followingPath;
 
 
     @Override
@@ -51,53 +52,58 @@ public class FollowingFeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-        collectionReference = firebaseFirestore.collection("Trip");
+        collectionReference = firebaseFirestore.collection("User");
 
         DocumentReference userDocumentReference =
                 firebaseFirestore.collection("User")
                         .document(FirebaseAuth.getInstance().getUid());
 
-
-        Task<QuerySnapshot> hopeReferenceQuery = firebaseFirestore.collection("User")
-                .document(FirebaseAuth.getInstance().getUid()).collection("Trips")
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        Task<QuerySnapshot> querySnapshotTask = collectionReference.getFirestore().collection("User").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                queryDocumentSnapshots.getDocuments().get(0).getReference()
+                        .collection("Following").get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
-                            Log.d(TAG, "get Data: " + documentSnapshot.getData());
+                        queryDocumentSnapshots.getDocuments().get(0).getReference()
+                                .collection("Trips").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                followingPath = queryDocumentSnapshots.getDocuments().get(0).getReference().getPath();
+                                Log.d(TAG, "PATH: " + followingPath);
 
-                            Log.d(TAG, "get some: " + documentSnapshot.get("tripDetails"));
+                                queryDocumentSnapshots.getDocuments().get(0).getReference().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        Log.d(TAG, "GET DATA" +documentSnapshot.getData());
+
+                                        //FINALLY GETTING DATA
 
 
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
 
+                                Log.d(TAG, "Metadata: " + queryDocumentSnapshots.getMetadata());
+
+//
+                            }
+                        });
                     }
                 });
-
-
-        DocumentReference testReference = firebaseFirestore.document("User/Qr8M3UK2amYKaFTPNKJCNNgWmt22/Trips/o56JnJa5LhoYFZxpibvF");
-        testReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists()) {
-                    Log.d(TAG, "Success??????");
-                    String td = documentSnapshot.getString("tripDetails");
-                    Log.d(TAG, "td: " + td);
-
-                } else {
-                    Log.d(TAG, "document does not exist");
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
             }
         });
+
+
+
+        String path = firebaseFirestore.collection("User")
+                .document(FirebaseAuth.getInstance().getUid()).collection("Following")
+                .document().collection("Trips").document().getPath();
+
+
+        Log.d(TAG, "path?: " + path);
+
+
 
         userDocumentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -135,8 +141,23 @@ public class FollowingFeedFragment extends Fragment {
     private void setUpRecyclerView(View view) {
 
         //TODO: Correct Document path issue so it works at runtime without hardcoded string
-        Query query = collectionReference.getFirestore().collection("User")
+//        Query query = collectionReference.getFirestore().collection("User")
+//                .document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
+//                .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
+
+
+        String path = firebaseFirestore.collection("User")
+                .document(FirebaseAuth.getInstance().getUid()).collection("Following")
+                .document().collection("Trips").getPath();
+
+
+
+
+        Log.d(TAG, "path?: " + path);
+
+        final Query query = collectionReference.getFirestore().collection("User")
                 .document("Qr8M3UK2amYKaFTPNKJCNNgWmt22")
+                .collection("Following").document("gGnJTLNCXRR3gYxHd0LS")
                 .collection("Trips").orderBy("tripTitle", Query.Direction.DESCENDING);
 
 
