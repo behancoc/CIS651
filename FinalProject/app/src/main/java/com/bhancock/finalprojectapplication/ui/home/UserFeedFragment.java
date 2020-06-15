@@ -130,13 +130,7 @@ public class UserFeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.mContext = getContext();
-        //mRecyclerView = view.findViewById(R.id.recyclerView);
-        //populateData();
-        //mTripViewAdapter = new TripViewAdapter(mContext, tripList);
-        //mRecyclerView.setAdapter(mTripViewAdapter);
-
         setUpRecyclerView(view);
-
     }
 
     private void setUpRecyclerView(View view) {
@@ -182,20 +176,4 @@ public class UserFeedFragment extends Fragment {
         mTripViewAdapter.stopListening();
     }
 
-
-    private void populateData() {
-//        tripList.add(new Trip("image_1", "Android", "California", "Los Angeles", 27));
-//        tripList.add(new Trip("image_2",  "Android", "California", "Los Angeles", 28));
-//        tripList.add(new Trip("image_3",  "Android", "California", "Los Angeles", 29));
-//        tripList.add(new Trip("image_4",  "Android", "California", "Los Angeles", 30));
-//        tripList.add(new Trip("image_5",  "Android", "California", "Los Angeles", 31));
-//        tripList.add(new Trip("image_6",  "Android", "California", "Los Angeles", 32));
-//        tripList.add(new Trip("image_1",  "Android", "California", "Los Angeles", 33));
-//        tripList.add(new Trip("image_2",  "Android", "California", "Los Angeles", 24));
-//        tripList.add(new Trip("image_3",  "Android", "California", "Los Angeles", 35));
-//        tripList.add(new Trip("image_4",  "Android", "California", "Los Angeles", 36));
-//        tripList.add(new Trip("image_5",  "Android", "California", "Los Angeles", 37));
-//        tripList.add(new Trip("image_6",  "Android", "California", "Los Angeles", 38));
-//        tripList.add(new Trip("image_1",  "Android", "California", "Los Angeles", 29));
-    }
 }

@@ -1,6 +1,7 @@
 package com.bhancock.finalprojectapplication.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,18 @@ import com.bhancock.finalprojectapplication.R;
 import com.bhancock.finalprojectapplication.model.Trip;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
 public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdapter.TripViewHolder> {
+
+    private static final String TAG = TripViewAdapter.class.getSimpleName();
+
     private Context mContext;
     private ArrayList<Trip> trips;
+
+//    private OnItemLongClickListener listener;
 
     public static class TripViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
@@ -40,8 +47,45 @@ public class TripViewAdapter extends FirestoreRecyclerAdapter<Trip, TripViewAdap
             this.tripDetailsRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_details_line_item);
             this.tripLikeCountRelativeLayout = (RelativeLayout) view.findViewById(R.id.trip_likes_line_item);
             this.itemView = view;
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "Take me to the map view with some coordinates");
+                }
+            });
+
+            textViewTripLikeCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "Update like counter");
+                }
+            });
+
+//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View v) {
+//                    int position = getAdapterPosition();
+//                    if (position != RecyclerView.NO_POSITION && liste ) {
+//
+//                        return true;
+//                    }
+//
+//                    return false;
+//                }
+//            });
         }
     }
+
+//    public interface OnItemLongClickListener {
+//        void onItemLongClick(DocumentSnapshot documentSnapshot, int position);
+//    }
+//
+//    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+//        this.listener = listener;
+//    }
+
+
 
     public TripViewAdapter(@NonNull FirestoreRecyclerOptions<Trip> options) {
         super(options);
