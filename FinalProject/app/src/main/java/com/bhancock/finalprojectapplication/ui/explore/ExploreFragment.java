@@ -288,7 +288,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
             PermissionUtils.requestPermission((AppCompatActivity) getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
-        // [END maps_check_location_permission]
+
     }
 
     @Override
@@ -373,22 +373,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
             public void onClick(View v) {
                 getDirections(markerPosition);
 
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                alertDialogBuilder.setMessage("Are you sure, You wanted to make decision");
-                        alertDialogBuilder.setPositiveButton("yes",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface arg0, int arg1) {
-                                        Toast.makeText(getContext(),"You clicked yes button",Toast.LENGTH_LONG).show();
-                                    }
-                        });
-
-
-
                 getDirectionsButton.hide();
-
                 GeoPoint tripGeoPoint = new GeoPoint(markerPosition.latitude, markerPosition.longitude);
-                createNewTrip(tripGeoPoint);
+                //createNewTrip(tripGeoPoint);
 
                 String latitude = String.valueOf(markerPosition.latitude);
                 String longitude = String.valueOf(markerPosition.longitude);
@@ -396,6 +383,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback,
                 Intent googleMapsIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 googleMapsIntent.setPackage("com.google.android.apps.maps");
 
+
+//                Uri gmmIntentUri = Uri.parse("google.streetview:cbll=46.414382,10.013988");
+//                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+//                mapIntent.setPackage("com.google.android.apps.maps");
+//                startActivity(mapIntent);
 
             }
         });
